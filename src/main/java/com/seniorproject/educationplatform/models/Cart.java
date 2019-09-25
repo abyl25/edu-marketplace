@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -22,6 +24,6 @@ public class Cart {
     // Student student
 
     @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)  //
-    private Set<Course> courses;  // FK
+    private List<Course> courses = new ArrayList<>();  // FK
 
 }

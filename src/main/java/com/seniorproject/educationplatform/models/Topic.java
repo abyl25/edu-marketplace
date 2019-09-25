@@ -9,7 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,12 +21,12 @@ public class Topic {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category subcategory; // parent FK
 
     private String name;
 
-    @OneToMany(mappedBy = "topic", fetch = FetchType.EAGER)
-    private Set<Course> courses = new HashSet<>();
+    @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
+    private List<Course> courses = new ArrayList<>();
 
 }

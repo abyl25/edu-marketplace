@@ -3,6 +3,7 @@ package com.seniorproject.educationplatform.models;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER) // cascade = CascadeType.ALL
     @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 //    private int userType;
 
     @Enumerated(EnumType.STRING)
@@ -38,24 +39,24 @@ public class User {
 
 
     // Student Relationships
-    @OneToMany(mappedBy = "student", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<CourseOrder> courseOrders = new HashSet<>();
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CourseOrder> courseOrders = new ArrayList<>();
 
-    @OneToOne(mappedBy = "student", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart;
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Review> reviews = new HashSet<>();
+    private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "student", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<LectureQA> questions = new HashSet<>();
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<LectureQA> questions = new ArrayList<>();
 
 
     // Instructor Relationships
     @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<Course> courses = new HashSet<>();
+    private List<Course> courses = new ArrayList<>();
 
-    @OneToOne(mappedBy = "instructor", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "instructor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private InstructorDetails instructorDetails;
 
 }

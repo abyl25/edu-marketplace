@@ -1,18 +1,23 @@
 package com.seniorproject.educationplatform.services;
 
+import com.seniorproject.educationplatform.dto.AddCourseDto;
 import com.seniorproject.educationplatform.models.Course;
+import com.seniorproject.educationplatform.models.Level;
 import com.seniorproject.educationplatform.models.Topic;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
+import com.seniorproject.educationplatform.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CourseService {
     private CourseRepo courseRepo;
+    private UserRepo userRepo;
 
     @Autowired
     public CourseService(CourseRepo courseRepo) {
@@ -27,9 +32,17 @@ public class CourseService {
         return courseRepo.findById(courseId);
     }
 
-    public Course addCourse(Course course) {
+    public Course addCourse(AddCourseDto addCourseDto) {
+        Course course = courseDtoToEntity(addCourseDto);
+        Date date = new Date(System.currentTimeMillis());
+        course.setAddedDate(date);
+        course.setLastUpdate(date);
+
+        String permaLink = createPermaLink(course.getTitle());
+        course.setPermaLink(permaLink);
+
         courseRepo.save(course);
-        return null;
+        return course;
     }
 
     public Course getCourseByTitle(String courseTitle) {
@@ -52,6 +65,12 @@ public class CourseService {
         return courseRepo.findByInstructorId(instructorId);
     }
 
+    private String createPermaLink(String name) {
+        String permaLink = name.toLowerCase();
+        permaLink = permaLink.replace(" ", "-");
+        return permaLink;
+    }
+
     public List<Course> getPopularCourses() {
         return null;
     }
@@ -70,6 +89,22 @@ public class CourseService {
 
     public List<User> getPopularInstructors() {
         return null;
+    }
+
+    private Course courseDtoToEntity(AddCourseDto addCourseDto) {
+        Course course = new Course();
+        course.setTitle(addCourseDto.getTitle());
+        course.setSubtitle(addCourseDto.getSubtitle());
+        User instructor = userRepo.findById(addCourseDto.getInstructorId()).orElse(null);
+        course.setInstructor(instructor);
+        course.setDescription(addCourseDto.getDescription());
+        Level level = Level.valueOf(addCourseDto.getLevel());
+        course.setLevel(level);
+        course.setLanguage(addCourseDto.getLanguage());
+        course.setCaption(addCourseDto.getCaption());
+        course.setPrice(addCourseDto.getPrice());
+        course.setImage("");
+        return course;
     }
 
 }

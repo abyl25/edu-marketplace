@@ -13,7 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -26,11 +28,6 @@ public class Course {
     private String title;
 
     private String subtitle;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "instructor_id")
-    private User instructor;   // FK
-    // former: private Instructor instructor
 
     private String description;
 
@@ -55,20 +52,24 @@ public class Course {
 
 //    private boolean featuredCourse;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
-    private Set<CourseSection> courseSections = new HashSet<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "instructor_id")
+    private User instructor;  // FK
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
-    private Set<Review> reviews = new HashSet<>();
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<CourseSection> courseSections = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
-    private Set<CourseOrder> courseOrders = new HashSet<>();
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
-    private Set<CourseGoal> courseGoals = new HashSet<>();
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<CourseOrder> courseOrders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER)
-    private Set<CourseRequirement> courseRequirements = new HashSet<>();
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<CourseGoal> courseGoals = new ArrayList<>();
+
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<CourseRequirement> courseRequirements = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn

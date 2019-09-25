@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.controllers;
 
+import com.seniorproject.educationplatform.dto.AddCourseDto;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
 import com.seniorproject.educationplatform.services.CourseService;
@@ -42,11 +43,11 @@ public class CourseController {
     }
 
     @PostMapping
-    public Course addCourse(@RequestBody Course course) {
+    public Course addCourse(@RequestBody AddCourseDto course) {
         return courseService.addCourse(course);
     }
 
-    @GetMapping("/{permaLink}")
+    @GetMapping("/link/{permaLink}")
     public Course getCourseByPermaLink(@PathVariable String permaLink) {
         return courseService.getCourseByPermalink(permaLink);
     }
@@ -54,6 +55,11 @@ public class CourseController {
     @GetMapping("/category/{categoryName}")
     public List<Course> getCoursesByCategoryName(@PathVariable String categoryName) {
         return courseService.getCoursesByCategory(categoryName);
+    }
+
+    @GetMapping("/category/{categoryName}/{subCategoryName}")
+    public List<Course> getCoursesBySubCategoryName(@PathVariable String categoryName, @PathVariable String subCategoryName) {
+        return courseService.getCoursesByCategory(subCategoryName);
     }
 
     @GetMapping("/topic/{topicName}")
