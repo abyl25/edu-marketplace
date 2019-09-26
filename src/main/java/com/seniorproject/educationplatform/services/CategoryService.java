@@ -28,6 +28,10 @@ public class CategoryService {
         return categoryRepo.findByName(categoryName);
     }
 
+    public boolean categoryExists(String categoryName) {
+        return categoryRepo.existsByName(categoryName);
+    }
+
     public List<Category> getCategories() {
         return categoryRepo.findByParentId(null);
     }

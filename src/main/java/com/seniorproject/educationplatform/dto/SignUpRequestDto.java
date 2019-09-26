@@ -9,5 +9,5 @@ public class SignUpRequestDto {
     private String userName;
     private String email;
     private String password;
-    private int userType; // student = 1, instructor = 2
+    private int userType; // admin = 1,  instructor = 2, student = 3
 }

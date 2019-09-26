@@ -1,27 +1,28 @@
 package com.seniorproject.educationplatform.services;
 
 import com.seniorproject.educationplatform.dto.AddCourseDto;
-import com.seniorproject.educationplatform.models.Course;
-import com.seniorproject.educationplatform.models.Level;
-import com.seniorproject.educationplatform.models.Topic;
-import com.seniorproject.educationplatform.models.User;
+import com.seniorproject.educationplatform.models.*;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
 import com.seniorproject.educationplatform.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CourseService {
+    private CategoryService categoryService;
     private CourseRepo courseRepo;
     private UserRepo userRepo;
 
     @Autowired
-    public CourseService(CourseRepo courseRepo) {
+    public CourseService(CategoryService categoryService, CourseRepo courseRepo, UserRepo userRepo) {
+        this.categoryService = categoryService;
         this.courseRepo = courseRepo;
+        this.userRepo = userRepo;
     }
 
     public List<Course> getCourses() {
@@ -53,8 +54,33 @@ public class CourseService {
         return courseRepo.findByPermaLink(permaLink);
     }
 
-    public List<Course> getCoursesByCategory(String categoryName) {
-        return courseRepo.findByCategoryName(categoryName);
+    public List<Course> getCoursesByCategory(String categoryName) throws Exception {
+        boolean categoryExists = categoryService.categoryExists(categoryName);
+        if (categoryExists) {
+            return courseRepo.findByCategoryName(categoryName);
+        } else {
+            throw new Exception("Category or subcategory does not exist!");
+        }
+    }
+
+    public List<Course> getCoursesByCategory(String categoryName, String subCategoryName) throws Exception {
+        boolean categoryExists = categoryService.categoryExists(categoryName);
+        boolean subcategoryExists = categoryService.categoryExists(subCategoryName);
+        if (categoryExists && subcategoryExists) {
+            return courseRepo.findByCategoryName(categoryName);
+        } else {
+            throw new Exception("Category or subcategory does not exist!");
+        }
+    }
+
+    public List<Course> getAllCoursesByRootCategory(String categoryName) throws Exception {
+        List<Course> courses = new ArrayList<>();
+        List<Category> subCategories = categoryService.getSubCategoriesByParentName(categoryName);
+        for (Category subcategory: subCategories) {
+            List<Course> cc = getCoursesByCategory(subcategory.getName());
+            courses.addAll(cc);
+        }
+        return courses;
     }
 
     public List<Course> getCoursesByTopic(String topicName) {

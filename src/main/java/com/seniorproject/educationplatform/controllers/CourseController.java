@@ -1,8 +1,10 @@
 package com.seniorproject.educationplatform.controllers;
 
 import com.seniorproject.educationplatform.dto.AddCourseDto;
+import com.seniorproject.educationplatform.models.Category;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
+import com.seniorproject.educationplatform.services.CategoryService;
 import com.seniorproject.educationplatform.services.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,13 +55,13 @@ public class CourseController {
     }
 
     @GetMapping("/category/{categoryName}")
-    public List<Course> getCoursesByCategoryName(@PathVariable String categoryName) {
-        return courseService.getCoursesByCategory(categoryName);
+    public List<Course> getCoursesByCategoryName(@PathVariable String categoryName) throws Exception {
+        return courseService.getAllCoursesByRootCategory(categoryName);
     }
 
     @GetMapping("/category/{categoryName}/{subCategoryName}")
-    public List<Course> getCoursesBySubCategoryName(@PathVariable String categoryName, @PathVariable String subCategoryName) {
-        return courseService.getCoursesByCategory(subCategoryName);
+    public List<Course> getCoursesBySubCategoryName(@PathVariable String categoryName, @PathVariable String subCategoryName) throws Exception {
+        return courseService.getCoursesByCategory(categoryName, subCategoryName);
     }
 
     @GetMapping("/topic/{topicName}")

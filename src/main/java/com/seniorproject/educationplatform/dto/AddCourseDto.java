@@ -18,5 +18,6 @@ public class AddCourseDto {
     private String language;
     private String caption;
     private Long price;
-
+    private String category;
+    private String topic;
 }
