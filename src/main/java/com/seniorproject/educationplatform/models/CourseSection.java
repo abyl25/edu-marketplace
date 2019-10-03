@@ -28,10 +28,10 @@ public class CourseSection {
     @JoinColumn
     private Course course; // FK
 
-    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
-    private List<CourseLecture> courseLectures = new ArrayList<>();
+//    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
+//    private List<CourseLecture> courseLectures = new ArrayList<>();
 
-    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
-    private List<CourseArticle> courseArticles = new ArrayList<>();
+//    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
+//    private List<CourseArticle> courseArticles = new ArrayList<>();
 
 }

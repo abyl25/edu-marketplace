@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,11 +12,13 @@ import java.sql.Date;
 @Data
 @IdClass(CourseOrder.CourseOrderId.class)
 public class CourseOrder implements Serializable {
+    @JsonIgnoreProperties("student")
     @Id
     @ManyToOne
     @JoinColumn
     private User student; // Student student
 
+    @JsonIgnoreProperties("course")
     @Id
     @ManyToOne
     @JoinColumn

@@ -23,7 +23,7 @@ public class Cart {
     private User student; // I added
     // Student student
 
-    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)  //
-    private List<Course> courses = new ArrayList<>();  // FK
+//    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)  //
+//    private List<Course> courses = new ArrayList<>();  // FK
 
 }

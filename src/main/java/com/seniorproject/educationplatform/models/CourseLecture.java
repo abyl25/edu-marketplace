@@ -32,10 +32,10 @@ public class CourseLecture {
 
     private boolean completed = false;
 
-    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.EAGER)
-    private Set<CourseResource> courseResources = new HashSet<>();
+//    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.EAGER)
+//    private Set<CourseResource> courseResources = new HashSet<>();
 
-    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.EAGER)
-    private Set<LectureQA> lectureQAs = new HashSet<>();
+//    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.EAGER)
+//    private Set<LectureQA> lectureQAs = new HashSet<>();
 
 }

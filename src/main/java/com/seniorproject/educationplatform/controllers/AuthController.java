@@ -9,11 +9,13 @@ import com.seniorproject.educationplatform.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,15 +32,17 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginRequestDto requestDto) {
+    public ResponseEntity login(@Valid @RequestBody LoginRequestDto requestDto) {
         log.info("AuthController, login() ");
         String userName = requestDto.getUserName();
-        String token = "";
+        String token;
         try {
             token = authService.login(requestDto);
         } catch (UsernameNotFoundException e) {
-            return ResponseEntity.status(400).body("User with username:" + userName + " not found");
-        } catch (CustomException e) {
+            log.info("LOG: AuthController login: Username " + userName + " not found");
+            return ResponseEntity.status(400).body("Username " + userName + " not found");
+        } catch (BadCredentialsException e) {
+            log.info("LOG: AuthController login: Invalid username or password");
             return ResponseEntity.status(422).body("Invalid username or password");
         }
 //        User user = userService.findByUserName(userName);
@@ -50,12 +54,12 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity signUp(@RequestBody SignUpRequestDto requestDto) {
+    public ResponseEntity signUp(@Valid @RequestBody SignUpRequestDto requestDto) {
         log.info("AuthController, signup() ");
         System.out.println("req body: ");
         System.out.println(requestDto);
         String userName = requestDto.getUserName();
-        String token = "";
+        String token;
         try {
             token = authService.signUp(requestDto);
         } catch (CustomException e) {

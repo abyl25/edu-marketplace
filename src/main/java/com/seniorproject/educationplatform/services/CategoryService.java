@@ -25,11 +25,11 @@ public class CategoryService {
     }
 
     public Category getCategoryByName(String categoryName) {
-        return categoryRepo.findByName(categoryName);
+        return categoryRepo.findByNameIgnoreCase(categoryName);
     }
 
     public boolean categoryExists(String categoryName) {
-        return categoryRepo.existsByName(categoryName);
+        return categoryRepo.existsByNameIgnoreCase(categoryName);
     }
 
     public List<Category> getCategories() {
@@ -41,7 +41,7 @@ public class CategoryService {
     }
 
     public List<Category> getSubCategoriesByParentName(String parentName) {
-        Category category = categoryRepo.findByName(parentName);
+        Category category = categoryRepo.findByNameIgnoreCase(parentName);
         return categoryRepo.findByParentId(category.getId());
     }
 
@@ -52,7 +52,7 @@ public class CategoryService {
     }
 
     public Topic getTopicByName(String topicName) {
-        return topicRepo.findByName(topicName);
+        return topicRepo.findByNameIgnoreCase(topicName);
     }
 
     public List<Topic> getTopics() {
@@ -64,7 +64,7 @@ public class CategoryService {
     }
 
     public List<Topic> getTopicsBySubcategoryName(String categoryName) {
-        return topicRepo.findBySubcategoryName(categoryName);
+        return topicRepo.findBySubcategoryNameIgnoreCase(categoryName);
     }
 
 }

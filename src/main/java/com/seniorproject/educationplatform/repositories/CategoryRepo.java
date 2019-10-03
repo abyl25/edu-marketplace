@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CategoryRepo extends JpaRepository<Category, Long> {
-    boolean existsByName(String categoryName);
+    boolean existsByNameIgnoreCase(String categoryName);
 
     List<Category> findByParentId(Long id);
 
-    Category findByName(String categoryName);
+    Category findByNameIgnoreCase(String categoryName);
 
 }

@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CourseRepo extends JpaRepository<Course, Long> {
-    Course findByTitle(String title);
+    Course findByTitleIgnoreCase(String title);
 
     Course findByPermaLink(String permaLink);
 
@@ -16,7 +16,7 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
 
     List<Course> findByTopicId(Long topicId);
 
-    List<Course> findByTopicName(String topicName);
+    List<Course> findByTopicNameIgnoreCase(String topicName);
 
     List<Course> findByInstructorId(Long id);
 

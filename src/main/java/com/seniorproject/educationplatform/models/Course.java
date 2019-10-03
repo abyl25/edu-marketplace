@@ -1,17 +1,10 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,6 +22,7 @@ public class Course {
 
     private String subtitle;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -40,7 +34,7 @@ public class Course {
 
     // rating ?
 
-    private Long price;  // price_off ?
+    private long price;  // price_off ?
 
     private Date addedDate;
 
@@ -52,33 +46,42 @@ public class Course {
 
 //    private boolean featuredCourse;
 
+    @JsonIgnoreProperties({"password", "roles", "status", "enabled"})
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "instructor_id")
     private User instructor;  // FK
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private List<CourseSection> courseSections = new ArrayList<>();
+//    @JsonIgnoreProperties("course")
+//    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+//    private List<CourseSection> courseSections = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private List<Review> reviews = new ArrayList<>();
+//    @JsonIgnoreProperties("course")
+//    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+//    private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private List<CourseOrder> courseOrders = new ArrayList<>();
+//    @JsonIgnoreProperties("course")
+//    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+//    private List<CourseOrder> courseOrders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private List<CourseGoal> courseGoals = new ArrayList<>();
+//    @JsonIgnoreProperties("course")
+//    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+//    private List<CourseGoal> courseGoals = new ArrayList<>();
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private List<CourseRequirement> courseRequirements = new ArrayList<>();
+//    @JsonIgnoreProperties("course")
+//    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+//    private List<CourseRequirement> courseRequirements = new ArrayList<>();
 
+    @JsonIgnoreProperties("parent")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Category category;
 
+    @JsonIgnoreProperties("subcategory")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Topic topic;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Cart cart;  // ???

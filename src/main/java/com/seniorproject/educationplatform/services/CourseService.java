@@ -4,6 +4,7 @@ import com.seniorproject.educationplatform.dto.AddCourseDto;
 import com.seniorproject.educationplatform.models.*;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
 import com.seniorproject.educationplatform.repositories.UserRepo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class CourseService {
     private CategoryService categoryService;
     private CourseRepo courseRepo;
@@ -47,7 +49,7 @@ public class CourseService {
     }
 
     public Course getCourseByTitle(String courseTitle) {
-        return courseRepo.findByTitle(courseTitle);
+        return courseRepo.findByTitleIgnoreCase(courseTitle);
     }
 
     public Course getCourseByPermalink (String permaLink) {
@@ -84,7 +86,7 @@ public class CourseService {
     }
 
     public List<Course> getCoursesByTopic(String topicName) {
-        return courseRepo.findByTopicName(topicName);
+        return courseRepo.findByTopicNameIgnoreCase(topicName);
     }
 
     public List<Course> getCoursesByInstructor(Long instructorId) {
@@ -92,9 +94,7 @@ public class CourseService {
     }
 
     private String createPermaLink(String name) {
-        String permaLink = name.toLowerCase();
-        permaLink = permaLink.replace(" ", "-");
-        return permaLink;
+        return name.toLowerCase().replace("-", " ").replaceAll(" +", " ").replace(" ", "-");
     }
 
     public List<Course> getPopularCourses() {
@@ -118,17 +118,22 @@ public class CourseService {
     }
 
     private Course courseDtoToEntity(AddCourseDto addCourseDto) {
+        log.info("LOG: CourseDto: " + addCourseDto);
         Course course = new Course();
-        course.setTitle(addCourseDto.getTitle());
-        course.setSubtitle(addCourseDto.getSubtitle());
+        course.setTitle(addCourseDto.getTitle().trim());
+        course.setSubtitle(addCourseDto.getSubtitle().trim());
         User instructor = userRepo.findById(addCourseDto.getInstructorId()).orElse(null);
         course.setInstructor(instructor);
-        course.setDescription(addCourseDto.getDescription());
-        Level level = Level.valueOf(addCourseDto.getLevel());
+        course.setDescription(addCourseDto.getDescription().trim());
+        Level level = Level.valueOf(addCourseDto.getLevel().trim());
         course.setLevel(level);
-        course.setLanguage(addCourseDto.getLanguage());
+        course.setLanguage(addCourseDto.getLanguage().trim());
         course.setCaption(addCourseDto.getCaption());
         course.setPrice(addCourseDto.getPrice());
+        Category category = categoryService.getCategoryByName(addCourseDto.getCategory().trim());
+        course.setCategory(category);
+        Topic topic = categoryService.getTopicByName(addCourseDto.getTopic().trim());
+        course.setTopic(topic);
         course.setImage("");
         return course;
     }

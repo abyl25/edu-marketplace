@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -24,17 +25,21 @@ public class Category {
 
     private String name;
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
-    private List<Category> subcategories = new ArrayList<>();
+//    @JsonIgnoreProperties("parent")
+//    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+//    private List<Category> subcategories = new ArrayList<>();
 
+//    @JsonIgnoreProperties("subcategories")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
     private Category parent;
 
-    @OneToMany(mappedBy = "subcategory", fetch = FetchType.LAZY)
-    private List<Topic> topics = new ArrayList<>();
+//    @JsonIgnoreProperties("subcategory")
+//    @OneToMany(mappedBy = "subcategory", fetch = FetchType.LAZY)
+//    private List<Topic> topics = new ArrayList<>();
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private List<Course> courses = new ArrayList<>();
+//    @JsonIgnoreProperties("category")
+//    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+//    private List<Course> courses = new ArrayList<>();
 
 }

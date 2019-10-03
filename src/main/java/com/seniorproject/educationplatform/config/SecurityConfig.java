@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -46,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/api/auth/login", "/api/auth/signup", "/user/role/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/signup").permitAll()
+            .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
             .antMatchers(ADMIN_ENDPOINT).hasRole("Admin")
             .anyRequest().authenticated()
             .and()

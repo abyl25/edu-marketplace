@@ -1,10 +1,7 @@
 package com.seniorproject.educationplatform.controllers;
 
 import com.seniorproject.educationplatform.dto.AddCourseDto;
-import com.seniorproject.educationplatform.models.Category;
 import com.seniorproject.educationplatform.models.Course;
-import com.seniorproject.educationplatform.repositories.CourseRepo;
-import com.seniorproject.educationplatform.services.CategoryService;
 import com.seniorproject.educationplatform.services.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

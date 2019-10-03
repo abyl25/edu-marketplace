@@ -1,14 +1,9 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,12 +16,15 @@ public class Topic {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+//    @JsonIgnoreProperties("topics")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subcategory_id")
     private Category subcategory; // parent FK
 
     private String name;
 
-    @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
-    private List<Course> courses = new ArrayList<>();
+//    @JsonIgnoreProperties("topic")
+//    @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
+//    private List<Course> courses = new ArrayList<>();
 
 }

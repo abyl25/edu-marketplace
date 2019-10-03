@@ -1,6 +1,8 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,7 +23,9 @@ public class Role {
 
     private String name;
 
+    @ToString.Exclude
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
-    private List<User> users = new ArrayList<>();;
+    private List<User> users = new ArrayList<>();
 
 }

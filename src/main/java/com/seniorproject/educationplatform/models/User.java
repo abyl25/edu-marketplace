@@ -2,11 +2,18 @@ package com.seniorproject.educationplatform.models;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -27,7 +34,8 @@ public class User {
 
     private String imageName;
 
-    @ManyToMany(fetch = FetchType.EAGER) // cascade = CascadeType.ALL
+//    @JsonIgnoreProperties("users")
+    @ManyToMany(fetch = FetchType.LAZY) // cascade = CascadeType.ALL
     @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles = new ArrayList<>();
 //    private int userType;
@@ -39,24 +47,29 @@ public class User {
 
 
     // Student Relationships
-    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<CourseOrder> courseOrders = new ArrayList<>();
+//    @JsonIgnoreProperties("student")
+//    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private List<CourseOrder> courseOrders = new ArrayList<>();
 
-    @OneToOne(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Cart cart;
+//    @JsonIgnoreProperties("student")
+//    @OneToOne(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private Cart cart;
 
-    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Review> reviews = new ArrayList<>();
+//    @JsonIgnoreProperties("student")
+//    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private List<Review> reviews = new ArrayList<>();
 
-    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<LectureQA> questions = new ArrayList<>();
+//    @JsonIgnoreProperties("student")
+//    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private List<LectureQA> questions = new ArrayList<>();
 
 
     // Instructor Relationships
-    @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Course> courses = new ArrayList<>();
+//    @JsonIgnoreProperties("instructor")
+//    @OneToMany(mappedBy = "instructor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private List<Course> courses = new ArrayList<>();
 
-    @OneToOne(mappedBy = "instructor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private InstructorDetails instructorDetails;
+//    @OneToOne(mappedBy = "instructor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    private InstructorDetails instructorDetails;
 
 }

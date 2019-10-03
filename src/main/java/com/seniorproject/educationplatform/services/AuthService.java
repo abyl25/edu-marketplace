@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class AuthService {
 
     public String login(LoginRequestDto loginRequestDto) {
         System.out.println("loginReqDto: " + loginRequestDto);
-        String token = "";
+        String token;
         String userName = loginRequestDto.getUserName();
         String password = loginRequestDto.getPassword();
         int userType = loginRequestDto.getUserType();
@@ -51,14 +52,8 @@ public class AuthService {
         if (user == null) {
             throw new UsernameNotFoundException("User with username: " + userName + " not found");
         }
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, password));
-            token = jwtTokenProvider.createToken(userName, user.getRoles());
-        } catch (AuthenticationException e) {
-            log.info("AuthService login: Invalid username or password");
-            e.printStackTrace();
-            throw new CustomException("Invalid username or password", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userName, password));
+        token = jwtTokenProvider.createToken(userName, user.getRoles());
         return token;
     }
 
@@ -67,11 +62,11 @@ public class AuthService {
         boolean userExists = userService.existsByUserName(user.getUserName());
         Long type = (long) signUpRequestDto.getUserType();
         Role role = roleRepo.findById(type).orElse(null);
-        System.out.println("role: " + role);
+//        System.out.println("role: " + role);
         List<Role> roles = new ArrayList<>();
         roles.add(role);
 
-        String token = "";
+        String token;
         if (!userExists) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(roles);

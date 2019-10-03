@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -21,10 +22,12 @@ public class LectureQA {
 
     // parent_id // ???
 
+    @JsonIgnoreProperties("courseLecture")
     @ManyToOne
     @JoinColumn
     private CourseLecture courseLecture;
 
+    @JsonIgnoreProperties("student")
     @ManyToOne
     @JoinColumn
     private User student;
