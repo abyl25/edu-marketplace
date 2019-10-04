@@ -1,6 +1,6 @@
 package com.seniorproject.educationplatform.dto;
 
-import com.seniorproject.educationplatform.annotations.MySequence;
+import com.seniorproject.educationplatform.validators.MySequence;
 import lombok.Data;
 
 import javax.validation.GroupSequence;

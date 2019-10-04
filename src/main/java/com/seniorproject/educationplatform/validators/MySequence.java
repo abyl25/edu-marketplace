@@ -1,4 +1,4 @@
-package com.seniorproject.educationplatform.annotations;
+package com.seniorproject.educationplatform.validators;
 
 import javax.validation.GroupSequence;
 import javax.validation.groups.Default;

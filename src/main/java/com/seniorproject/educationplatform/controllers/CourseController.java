@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +42,7 @@ public class CourseController {
     }
 
     @PostMapping
-    public Course addCourse(@RequestBody AddCourseDto course) {
+    public Course addCourse(@Valid @RequestBody AddCourseDto course) {
         return courseService.addCourse(course);
     }
 
