@@ -30,15 +30,17 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final RoleRepo roleRepo;
+    private final VerificationTokenService verificationTokenService;
 
     @Autowired
     public AuthService(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider,
-                   UserService userService, RoleRepo roleRepo) {
+                   UserService userService, RoleRepo roleRepo, VerificationTokenService verificationTokenService) {
         this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.roleRepo = roleRepo;
+        this.verificationTokenService = verificationTokenService;
     }
 
     public String login(LoginRequestDto loginRequestDto) {
@@ -56,26 +58,23 @@ public class AuthService {
         return token;
     }
 
-    public String signUp(SignUpRequestDto signUpRequestDto) {
+    public void signUp(SignUpRequestDto signUpRequestDto) {
         User user = userService.signUpDtoToEntity(signUpRequestDto);  // modelMapper.map(signUpRequestDto, User.class);
         boolean userExists = userService.existsByUserName(user.getUserName());
         Long type = (long) signUpRequestDto.getUserType();
         Role role = roleRepo.findById(type).orElse(null);
-//        System.out.println("role: " + role);
         List<Role> roles = new ArrayList<>();
         roles.add(role);
 
-        String token;
         if (!userExists) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(roles);
             userService.save(user);
-            token = jwtTokenProvider.createToken(user.getUserName(), user.getRoles());
+            verificationTokenService.createVerification(user);
         } else {
             log.info("AuthService signup: Username is already in use");
             throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        return token;
     }
 
     public User me(HttpServletRequest req) {

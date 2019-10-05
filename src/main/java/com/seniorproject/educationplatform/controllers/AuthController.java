@@ -4,12 +4,15 @@ import com.seniorproject.educationplatform.dto.LoginRequestDto;
 import com.seniorproject.educationplatform.dto.SignUpRequestDto;
 import com.seniorproject.educationplatform.exception.CustomException;
 import com.seniorproject.educationplatform.models.User;
+import com.seniorproject.educationplatform.models.VerificationToken;
 import com.seniorproject.educationplatform.services.AuthService;
 import com.seniorproject.educationplatform.services.UserService;
+import com.seniorproject.educationplatform.services.VerificationTokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +28,13 @@ import java.util.Map;
 public class AuthController {
     private final AuthService authService;
     private final UserService userService;
+    private final VerificationTokenService verificationTokenService;
+
     @Autowired
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthService authService, UserService userService, VerificationTokenService verificationTokenService) {
         this.authService = authService;
         this.userService = userService;
+        this.verificationTokenService = verificationTokenService;
     }
 
     @PostMapping("/login")
@@ -41,7 +47,11 @@ public class AuthController {
         } catch (UsernameNotFoundException e) {
             log.info("LOG: AuthController login: Username " + userName + " not found");
             return ResponseEntity.status(400).body("Username " + userName + " not found");
-        } catch (BadCredentialsException e) {
+        } catch (DisabledException e) {
+            log.info("LOG: AuthController login: User with username: {} is disabled", userName);
+            return ResponseEntity.status(422).body("You are disabled. Please, confirm your account by an email we have sent you");
+        }
+        catch (BadCredentialsException e) {
             log.info("LOG: AuthController login: Invalid username or password");
             return ResponseEntity.status(422).body("Invalid username or password");
         }
@@ -56,12 +66,10 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity signUp(@Valid @RequestBody SignUpRequestDto requestDto) {
         log.info("AuthController, signup() ");
-        System.out.println("req body: ");
-        System.out.println(requestDto);
+        System.out.println("req body: " + requestDto);
         String userName = requestDto.getUserName();
-        String token;
         try {
-            token = authService.signUp(requestDto);
+            authService.signUp(requestDto);
         } catch (CustomException e) {
             return ResponseEntity.status(422).body("Username is already in use");
         }
@@ -69,8 +77,13 @@ public class AuthController {
         Map<Object, Object> response = new HashMap<>();
 //        response.put("user", user);
         response.put("userName", userName);
-        response.put("token", token);
+        response.put("message", "We have sent you a confirmation email. Please, confirm your account!");
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/confirm")
+    public ResponseEntity confirmAccount(@RequestParam("token") String token) {
+        return verificationTokenService.verifyAccount(token);
     }
 
     @GetMapping("/user")

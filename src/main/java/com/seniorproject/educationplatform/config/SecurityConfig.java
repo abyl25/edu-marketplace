@@ -24,7 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
 
     private static final String ADMIN_ENDPOINT = "/api/admin/**";
-//    private static final String LOGIN_ENDPOINT = "/api/auth/login";
+    private static final String AUTH = "/api/auth";
 
     @Autowired
     public SecurityConfig(JwtTokenProvider jwtTokenProvider, @Qualifier("jwtUserDetailsService") UserDetailsService userDetailsService) {
@@ -38,7 +38,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    //
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -47,8 +46,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/signup").permitAll()
+            .antMatchers(HttpMethod.POST, AUTH + "/login", AUTH + "/signup").permitAll()
+            .antMatchers(HttpMethod.GET, AUTH + "/confirm").permitAll()
             .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
+            .antMatchers("/api/courses/**").hasAuthority("Instructor")
             .antMatchers(ADMIN_ENDPOINT).hasRole("Admin")
             .anyRequest().authenticated()
             .and()

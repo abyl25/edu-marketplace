@@ -45,6 +45,9 @@ public class User {
 
     private boolean enabled = false;
 
+//    public User() {
+//        this.enabled = false;
+//    }
 
     // Student Relationships
 //    @JsonIgnoreProperties("student")
