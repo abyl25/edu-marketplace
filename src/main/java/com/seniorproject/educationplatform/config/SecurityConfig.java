@@ -47,7 +47,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.POST, AUTH + "/login", AUTH + "/signup").permitAll()
-            .antMatchers(HttpMethod.GET, AUTH + "/confirm").permitAll()
+            .antMatchers(HttpMethod.GET, AUTH + "/confirmAccount").permitAll()
+            .antMatchers(HttpMethod.POST, AUTH + "/forgotPassword").permitAll()
+            .antMatchers(HttpMethod.GET, AUTH + "/validatePasswordResetToken").permitAll()
+            .antMatchers(HttpMethod.POST, AUTH + "/updatePassword").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
+
             .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
             .antMatchers("/api/courses/**").hasAuthority("Instructor")
             .antMatchers(ADMIN_ENDPOINT).hasRole("Admin")

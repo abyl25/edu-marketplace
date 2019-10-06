@@ -1,6 +1,7 @@
 package com.seniorproject.educationplatform.controllers;
 
 import com.seniorproject.educationplatform.dto.LoginRequestDto;
+import com.seniorproject.educationplatform.dto.PasswordUpdateDto;
 import com.seniorproject.educationplatform.dto.SignUpRequestDto;
 import com.seniorproject.educationplatform.exception.CustomException;
 import com.seniorproject.educationplatform.models.User;
@@ -49,7 +50,7 @@ public class AuthController {
             return ResponseEntity.status(400).body("Username " + userName + " not found");
         } catch (DisabledException e) {
             log.info("LOG: AuthController login: User with username: {} is disabled", userName);
-            return ResponseEntity.status(422).body("You are disabled. Please, confirm your account by an email we have sent you");
+            return ResponseEntity.status(422).body("You haven't confirmed your account yet. Please, do it by an email we have sent you");
         }
         catch (BadCredentialsException e) {
             log.info("LOG: AuthController login: Invalid username or password");
@@ -81,9 +82,25 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/confirm")
+    @GetMapping("/confirmAccount")
     public ResponseEntity confirmAccount(@RequestParam("token") String token) {
         return verificationTokenService.verifyAccount(token);
+    }
+
+    @PostMapping("/forgotPassword")
+    public ResponseEntity forgotPassword(@RequestParam("email") String email) {
+        return authService.createPasswordResetToken(email);
+    }
+
+    @GetMapping("/resetPassword")
+    public ResponseEntity resetPassword(@RequestParam("id") long id, @RequestParam("token") String token) {
+        return authService.resetPassword(id, token);
+    }
+
+    @PostMapping("/updatePassword")
+    public ResponseEntity updatePassword(@Valid @RequestBody PasswordUpdateDto passwordUpdateDto) {
+        log.info("LOG: AuthController, updatePassword()");
+        return authService.updatePassword(passwordUpdateDto);
     }
 
     @GetMapping("/user")

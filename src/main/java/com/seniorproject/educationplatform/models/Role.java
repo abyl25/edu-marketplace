@@ -28,4 +28,11 @@ public class Role {
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private List<User> users = new ArrayList<>();
 
+    public Role() {
+    }
+
+    public Role(String roleName) {
+        this.name = roleName;
+    }
+
 }

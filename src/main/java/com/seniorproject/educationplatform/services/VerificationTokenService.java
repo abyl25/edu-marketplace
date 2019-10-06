@@ -6,11 +6,8 @@ import com.seniorproject.educationplatform.repositories.UserRepo;
 import com.seniorproject.educationplatform.repositories.VerificationTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
-import javax.mail.internet.InternetAddress;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 
 @Service
@@ -33,7 +30,7 @@ public class VerificationTokenService {
 
         String to = user.getEmail();
         String from = "EduMarketplace Team <abylay.tastanbekov@nu.edu.kz>";
-        String subject = "Confirm Registration!";
+        String subject = "Confirm account!";
         String text = "Hi " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
                 "To confirm your account, please click here: http://localhost:8081/api/auth/confirm?token=" + verificationToken.getToken() + "\n\n" +
                 "Kind regards,\n" + "Education platform team,\n" + "Astana, Kazakhstan";
