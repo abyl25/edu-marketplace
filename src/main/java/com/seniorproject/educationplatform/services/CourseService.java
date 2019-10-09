@@ -1,11 +1,19 @@
 package com.seniorproject.educationplatform.services;
 
+import com.seniorproject.educationplatform.ESModels.ESCourse;
+import com.seniorproject.educationplatform.ESModels.ESUser;
+import com.seniorproject.educationplatform.ESRepos.CourseSearchRepo;
 import com.seniorproject.educationplatform.dto.AddCourseDto;
 import com.seniorproject.educationplatform.models.*;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
 import com.seniorproject.educationplatform.repositories.UserRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -13,18 +21,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.elasticsearch.index.query.Operator.AND;
+import static org.elasticsearch.index.query.QueryBuilders.*;
+
 @Service
 @Slf4j
 public class CourseService {
     private CategoryService categoryService;
     private CourseRepo courseRepo;
+    private CourseSearchRepo courseSearchRepo;
+    private UserService userService;
     private UserRepo userRepo;
+    private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
-    public CourseService(CategoryService categoryService, CourseRepo courseRepo, UserRepo userRepo) {
+    public CourseService(CategoryService categoryService, CourseRepo courseRepo, CourseSearchRepo courseSearchRepo,
+                UserService userService, UserRepo userRepo, ElasticsearchOperations elasticsearchOperations) {
         this.categoryService = categoryService;
         this.courseRepo = courseRepo;
+        this.courseSearchRepo = courseSearchRepo;
+        this.userService = userService;
         this.userRepo = userRepo;
+        this.elasticsearchOperations = elasticsearchOperations;
     }
 
     public List<Course> getCourses() {
@@ -44,8 +62,35 @@ public class CourseService {
         String permaLink = createPermaLink(course.getTitle());
         course.setPermaLink(permaLink);
 
-        courseRepo.save(course);
+        course = courseRepo.save(course);
+
+        ESCourse esCourse = courseEntityToESCourseDocument(course);
+        esCourse.setId(course.getId());
+        esCourse.setAddedDate(date);
+        esCourse.setLastUpdate(date);
+        esCourse.setPermaLink(permaLink);
+        ESUser user = userService.userEntityToESUserDocument(course.getInstructor());
+        esCourse.setInstructor(user);
+        courseSearchRepo.save(esCourse);
+
         return course;
+    }
+
+    public void removeCourse(Long id) {
+        courseRepo.deleteById(id);
+        courseSearchRepo.deleteById(id);
+    }
+
+    public List<ESCourse> searchCourses(String search) {
+        SearchQuery searchQuery = new NativeSearchQueryBuilder()
+            .withQuery(multiMatchQuery(search)
+                .field("title")
+                .field("subtitle")
+                .fuzziness(Fuzziness.ONE)
+                .prefixLength(3)
+                .type(MultiMatchQueryBuilder.Type.BEST_FIELDS))
+            .build();
+        return elasticsearchOperations.queryForList(searchQuery, ESCourse.class);
     }
 
     public Course getCourseByTitle(String courseTitle) {
@@ -94,7 +139,10 @@ public class CourseService {
     }
 
     private String createPermaLink(String name) {
-        return name.toLowerCase().replace("-", " ").replaceAll(" +", " ").replace(" ", "-");
+        return name.toLowerCase()
+                .replaceAll("[_!@#$%^&*()-=+:.,|]", " ")
+                .replaceAll(" +", " ").trim()
+                .replace(" ", "-");
     }
 
     public List<Course> getPopularCourses() {
@@ -136,6 +184,21 @@ public class CourseService {
         course.setTopic(topic);
         course.setImage("");
         return course;
+    }
+
+    private ESCourse courseEntityToESCourseDocument(Course course) {
+        ESCourse esCourse = new ESCourse();
+        esCourse.setTitle(course.getTitle());
+        esCourse.setSubtitle(course.getSubtitle());
+        esCourse.setDescription(course.getDescription());
+        esCourse.setLevel(course.getLevel().toString());
+        esCourse.setLanguage(course.getLanguage());
+        esCourse.setCaption(course.getCaption());
+        esCourse.setPrice(course.getPrice());
+        esCourse.setImage("");
+        esCourse.setCategory(course.getCategory().getName());
+        esCourse.setTopic(course.getTopic().getName());
+        return esCourse;
     }
 
 }

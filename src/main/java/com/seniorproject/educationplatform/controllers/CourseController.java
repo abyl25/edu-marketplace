@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.controllers;
 
+import com.seniorproject.educationplatform.ESModels.ESCourse;
 import com.seniorproject.educationplatform.dto.AddCourseDto;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.services.CourseService;
@@ -46,6 +47,11 @@ public class CourseController {
         return courseService.addCourse(course);
     }
 
+    @DeleteMapping("/{courseId}")
+    public void removeCourse(@PathVariable Long courseId) {
+        courseService.removeCourse(courseId);
+    }
+
     @GetMapping("/link/{permaLink}")
     public Course getCourseByPermaLink(@PathVariable String permaLink) {
         return courseService.getCourseByPermalink(permaLink);
@@ -66,5 +72,9 @@ public class CourseController {
         return courseService.getCoursesByTopic(topicName);
     }
 
+    @GetMapping("/search")
+    public List<ESCourse> searchCourses(@RequestParam("q") String search) {
+        return courseService.searchCourses(search);
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.services;
 
+import com.seniorproject.educationplatform.ESModels.ESUser;
 import com.seniorproject.educationplatform.dto.SignUpRequestDto;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.repositories.UserRepo;
@@ -58,7 +59,18 @@ public class UserService {
     }
 
 //    public User loginDtoToEntity() {
-//
 //    }
 
+    public ESUser userEntityToESUserDocument(User user) {
+        ESUser esUser = new ESUser();
+        esUser.setFirstName(user.getFirstName());
+        esUser.setLastName(user.getLastName());
+        esUser.setUserName(user.getUserName());
+        esUser.setEmail(user.getEmail());
+        esUser.setPassword(user.getPassword());
+        esUser.setImageName(user.getImageName());
+        esUser.setRoles(user.getRoles());
+        esUser.setEnabled(user.isEnabled());
+        return esUser;
+    }
 }
