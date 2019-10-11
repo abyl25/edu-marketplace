@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+            .cors().and()
             .httpBasic().disable()
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -51,9 +52,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.POST, AUTH + "/forgotPassword").permitAll()
             .antMatchers(HttpMethod.GET, AUTH + "/validatePasswordResetToken").permitAll()
             .antMatchers(HttpMethod.POST, AUTH + "/updatePassword").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
-
             .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
             .antMatchers("/api/courses/**").hasAuthority("Instructor")
+            .antMatchers("/api/cart/**").permitAll()
+
             .antMatchers(ADMIN_ENDPOINT).hasRole("Admin")
             .anyRequest().authenticated()
             .and()

@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -36,18 +37,14 @@ public class User {
 
     private boolean enabled = false;
 
-//    public User() {
-//        this.enabled = false;
-//    }
-
     // Student Relationships
+    @JsonIgnore
+    @OneToOne(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Cart cart;
+
 //    @JsonIgnoreProperties("student")
 //    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    private List<CourseOrder> courseOrders = new ArrayList<>();
-
-//    @JsonIgnoreProperties("student")
-//    @OneToOne(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private Cart cart;
 
 //    @JsonIgnoreProperties("student")
 //    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

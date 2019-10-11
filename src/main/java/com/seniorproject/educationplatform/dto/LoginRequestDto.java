@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 public class LoginRequestDto {
     @NotBlank(message = "Username is empty")
     @Size(min = 2, message = "Minimum password length: 2 characters", groups = MySequence.First.class)
-    @Pattern(regexp = "^[a-z.A-Z]+$", message = "No numbers are allowed for username", groups = MySequence.Second.class)
+    @Pattern(regexp = "^[a-z.A-Z0-9]+$", message = "pattern: alphanumeric and .(dot)", groups = MySequence.Second.class)
     private String userName;
 
     @NotBlank(message = "Password is empty")

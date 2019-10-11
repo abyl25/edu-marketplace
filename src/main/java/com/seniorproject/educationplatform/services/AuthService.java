@@ -4,6 +4,7 @@ import com.seniorproject.educationplatform.dto.LoginRequestDto;
 import com.seniorproject.educationplatform.dto.PasswordUpdateDto;
 import com.seniorproject.educationplatform.dto.SignUpRequestDto;
 import com.seniorproject.educationplatform.exception.CustomException;
+import com.seniorproject.educationplatform.models.Cart;
 import com.seniorproject.educationplatform.models.PasswordResetToken;
 import com.seniorproject.educationplatform.models.Role;
 import com.seniorproject.educationplatform.models.User;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -85,6 +87,11 @@ public class AuthService {
         if (!userExists) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(roles);
+
+            Cart cart = new Cart();
+            user.setCart(cart);
+            cart.setStudent(user);
+
             userService.save(user);
             verificationTokenService.createVerification(user);
         } else {
@@ -155,6 +162,18 @@ public class AuthService {
 
         userService.save(user);
         return ResponseEntity.ok("Password updated successfully! Log in again");
+    }
+
+    public UserDetails getLoggedInUser() {
+        Authentication auth = getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            return (UserDetails) auth.getPrincipal();
+        }
+        return null;
+    }
+
+    public Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 
     public User me(HttpServletRequest req) {
