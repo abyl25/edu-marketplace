@@ -27,7 +27,7 @@ public class CartController {
     @GetMapping
     public ResponseEntity getCoursesInCart() {
         JwtUser jwtUser = (JwtUser) authService.getLoggedInUser();
-        Cart cart = cartService.getCartById(jwtUser.getId());
+        Cart cart = jwtUser.getCart();
         List<CartItem> cartItems = cartService.getCoursesInCart(cart.getId());
         return ResponseEntity.ok(cartItems);
     }
