@@ -2,10 +2,17 @@ package com.seniorproject.educationplatform.models;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -14,15 +21,11 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    // @MapsId
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User student;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
     private List<CartItem> cartItem = new ArrayList<>();
-
-//    @OneToMany(mappedBy = "cart", fetch = FetchType.EAGER)  //
-//    private List<Course> courses = new ArrayList<>();  // FK
 
 }

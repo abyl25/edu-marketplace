@@ -12,7 +12,7 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
 
     Course findByPermaLink(String permaLink);
 
-    List<Course> findByCategoryName(String categoryName);
+    List<Course> findByCategoryNameIgnoreCase(String categoryName);
 
     List<Course> findByTopicId(Long topicId);
 

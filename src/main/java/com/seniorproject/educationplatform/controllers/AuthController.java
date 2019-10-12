@@ -6,6 +6,7 @@ import com.seniorproject.educationplatform.dto.SignUpRequestDto;
 import com.seniorproject.educationplatform.exception.CustomException;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.models.VerificationToken;
+import com.seniorproject.educationplatform.security.JwtUser;
 import com.seniorproject.educationplatform.services.AuthService;
 import com.seniorproject.educationplatform.services.UserService;
 import com.seniorproject.educationplatform.services.VerificationTokenService;
@@ -104,12 +105,8 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    public void getLoggedInUser(Authentication auth) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth.getName();
-        Object credentials = auth.getCredentials();
-        Object authorities = auth.getAuthorities();
-        
+    public JwtUser getLoggedInUser(Authentication auth) {
+        return (JwtUser) authService.getLoggedInUser();
     }
 
     @GetMapping("/me")

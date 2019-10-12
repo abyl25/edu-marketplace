@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -21,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.elasticsearch.index.query.Operator.AND;
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
 
 @Service
 @Slf4j
@@ -102,36 +103,41 @@ public class CourseService {
     }
 
     public List<Course> getCoursesByCategory(String categoryName) throws Exception {
-        boolean categoryExists = categoryService.categoryExists(categoryName);
-        if (categoryExists) {
-            return courseRepo.findByCategoryName(categoryName);
-        } else {
-            throw new Exception("Category or subcategory does not exist!");
-        }
+        return courseRepo.findByCategoryNameIgnoreCase(categoryName.trim());
     }
 
-    public List<Course> getCoursesByCategory(String categoryName, String subCategoryName) throws Exception {
-        boolean categoryExists = categoryService.categoryExists(categoryName);
-        boolean subcategoryExists = categoryService.categoryExists(subCategoryName);
+    public ResponseEntity getCoursesByCategory(String categoryName, String subCategoryName) throws Exception {
+        String category = categoryName.replace("-", " ");
+        String subCategory = subCategoryName.replace("-", " ");
+        boolean categoryExists = categoryService.categoryExists(category);
+        boolean subcategoryExists = categoryService.categoryExists(subCategory);
         if (categoryExists && subcategoryExists) {
-            return courseRepo.findByCategoryName(categoryName);
+            List<Course> courses = courseRepo.findByCategoryNameIgnoreCase(subCategory.trim());
+            return ResponseEntity.ok(courses);
         } else {
-            throw new Exception("Category or subcategory does not exist!");
+            return new ResponseEntity<>("Category or subcategory " + category + " does not exist!", HttpStatus.NOT_FOUND);
         }
     }
 
-    public List<Course> getAllCoursesByRootCategory(String categoryName) throws Exception {
+    public ResponseEntity getAllCoursesByRootCategory(String categoryName) throws Exception {
+        if (!categoryService.categoryExists(categoryName)) {
+            return new ResponseEntity<>("Category or subcategory " + categoryName + " does not exist!", HttpStatus.NOT_FOUND);
+        }
         List<Course> courses = new ArrayList<>();
         List<Category> subCategories = categoryService.getSubCategoriesByParentName(categoryName);
         for (Category subcategory: subCategories) {
             List<Course> cc = getCoursesByCategory(subcategory.getName());
             courses.addAll(cc);
         }
-        return courses;
+        return ResponseEntity.ok(courses);
     }
 
-    public List<Course> getCoursesByTopic(String topicName) {
-        return courseRepo.findByTopicNameIgnoreCase(topicName);
+    public ResponseEntity getCoursesByTopic(String topicName) {
+        if (!categoryService.topicExists(topicName)) {
+            return new ResponseEntity<>("Topic " + topicName + " does not exist!", HttpStatus.NOT_FOUND);
+        }
+        List<Course> courses = courseRepo.findByTopicNameIgnoreCase(topicName.trim());
+        return ResponseEntity.ok(courses);
     }
 
     public List<Course> getCoursesByInstructor(Long instructorId) {

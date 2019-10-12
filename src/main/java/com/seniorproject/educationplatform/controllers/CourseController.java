@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -58,17 +59,17 @@ public class CourseController {
     }
 
     @GetMapping("/category/{categoryName}")
-    public List<Course> getCoursesByCategoryName(@PathVariable String categoryName) throws Exception {
+    public ResponseEntity getCoursesByCategoryName(@PathVariable String categoryName) throws Exception {
         return courseService.getAllCoursesByRootCategory(categoryName);
     }
 
     @GetMapping("/category/{categoryName}/{subCategoryName}")
-    public List<Course> getCoursesBySubCategoryName(@PathVariable String categoryName, @PathVariable String subCategoryName) throws Exception {
+    public ResponseEntity getCoursesBySubCategoryName(@PathVariable String categoryName, @PathVariable String subCategoryName) throws Exception {
         return courseService.getCoursesByCategory(categoryName, subCategoryName);
     }
 
     @GetMapping("/topic/{topicName}")
-    public List<Course> getCoursesByTopicName(@PathVariable String topicName) {
+    public ResponseEntity getCoursesByTopicName(@PathVariable String topicName) {
         return courseService.getCoursesByTopic(topicName);
     }
 
