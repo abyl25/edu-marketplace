@@ -94,6 +94,14 @@ public class CourseService {
         return elasticsearchOperations.queryForList(searchQuery, ESCourse.class);
     }
 
+    public void courseRequirements(List<CourseRequirement> courseRequirements) {
+
+    }
+
+    public boolean courseTitleExists(String title) {
+        return courseRepo.existsByTitleIgnoreCase(title.trim());
+    }
+
     public Course getCourseByTitle(String courseTitle) {
         return courseRepo.findByTitleIgnoreCase(courseTitle);
     }

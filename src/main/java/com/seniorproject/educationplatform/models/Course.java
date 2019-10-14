@@ -12,11 +12,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Entity
 @Data
+@Entity
 public class Course {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="COURSE_SEQ")
+    @SequenceGenerator(name="COURSE_SEQ", sequenceName = "COURSE_SEQ", allocationSize = 1)
     private Long id;
 
     private String title;
@@ -81,10 +82,5 @@ public class Course {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Topic topic;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Cart cart;  // ???
 
 }

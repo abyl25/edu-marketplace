@@ -44,8 +44,9 @@ public class CourseController {
     }
 
     @PostMapping
-    public Course addCourse(@Valid @RequestBody AddCourseDto course) {
-        return courseService.addCourse(course);
+    public ResponseEntity addCourse(@Valid @RequestBody AddCourseDto course) {
+        Course newCourse = courseService.addCourse(course);
+        return ResponseEntity.ok(newCourse);
     }
 
     @DeleteMapping("/{courseId}")

@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface CourseRepo extends JpaRepository<Course, Long> {
+    boolean existsByTitleIgnoreCase(String title);
+
     Course findByTitleIgnoreCase(String title);
 
     Course findByPermaLink(String permaLink);

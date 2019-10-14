@@ -2,6 +2,7 @@ package com.seniorproject.educationplatform.dto;
 
 import com.seniorproject.educationplatform.validators.CategoryExists;
 import com.seniorproject.educationplatform.validators.MySequence;
+import com.seniorproject.educationplatform.validators.TitleExists;
 import com.seniorproject.educationplatform.validators.TopicExists;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ import javax.validation.constraints.*;
 public class AddCourseDto {
     @NotBlank(message = "Title is empty")
     @Size(min = 5, message = "Minimum title length: 5 characters", groups = MySequence.First.class)
+    @TitleExists(groups = MySequence.Second.class)
     private String title;
 
     @NotBlank(message = "Subtitle is empty")

@@ -6,13 +6,14 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity
 @Data
+@Entity
 public class VerificationToken {
     public static final String STATUS_PENDING = "PENDING";
     public static final String STATUS_VERIFIED = "VERIFIED";
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VER_SEQ")
+    @SequenceGenerator(name="VER_SEQ", sequenceName = "VER_SEQ", allocationSize = 1)
     private Long id;
     private String token;
     private String status;

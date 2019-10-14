@@ -47,6 +47,10 @@ public class UserService {
         userRepo.delete(user);
     }
 
+    public void deleteById(Long userId) {
+        userRepo.deleteById(userId);
+    }
+
     // Model Mapper
     public User signUpDtoToEntity(SignUpRequestDto requestDto) {
         User user = new User();
