@@ -13,7 +13,8 @@ import java.util.Set;
 @Data
 public class Topic {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="TOPIC_SEQ")
+    @SequenceGenerator(name="TOPIC_SEQ", sequenceName = "TOPIC_SEQ", allocationSize = 1)
     private Long id;
 
 //    @JsonIgnoreProperties("topics")
@@ -22,6 +23,13 @@ public class Topic {
     private Category subcategory; // parent FK
 
     private String name;
+
+    public Topic() {}
+
+    public Topic(String name, Category subcategory) {
+        this.name = name;
+        this.subcategory = subcategory;
+    }
 
 //    @JsonIgnoreProperties("topic")
 //    @OneToMany(mappedBy = "topic", fetch = FetchType.LAZY)
