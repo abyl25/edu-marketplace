@@ -72,14 +72,14 @@ public class CourseService {
         esCourse.setPermaLink(permaLink);
         ESUser user = userService.userEntityToESUserDocument(course.getInstructor());
         esCourse.setInstructor(user);
-        courseSearchRepo.save(esCourse);
+//        courseSearchRepo.save(esCourse);
 
         return course;
     }
 
     public void removeCourse(Long id) {
         courseRepo.deleteById(id);
-        courseSearchRepo.deleteById(id);
+//        courseSearchRepo.deleteById(id);
     }
 
     public List<ESCourse> searchCourses(String search) {
