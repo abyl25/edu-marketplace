@@ -32,7 +32,7 @@ public class VerificationTokenService {
         String from = "EduMarketplace Team <abylay.tastanbekov@nu.edu.kz>";
         String subject = "Confirm account!";
         String text = "Hi " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
-                "To confirm your account, please click here: http://localhost:8081/api/auth/confirmAccount?token=" + verificationToken.getToken() + "\n\n" +
+                "To confirm your account, please click here: http://localhost:8080/confirm?token=" + verificationToken.getToken() + "\n\n" +
                 "Kind regards,\n" + "Education platform team,\n" + "Astana, Kazakhstan";
         emailSenderService.sendEmail(to, from, subject, text);
     }
