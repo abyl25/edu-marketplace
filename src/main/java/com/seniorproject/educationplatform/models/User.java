@@ -36,7 +36,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     // Student Relationships
     @JsonIgnore

@@ -28,8 +28,8 @@ public class DbInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        populateRoles();
-        populateCategories();
+//        populateRoles();
+//        populateCategories();
     }
 
     private void populateRoles() {

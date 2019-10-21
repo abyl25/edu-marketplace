@@ -123,7 +123,7 @@ public class CourseService {
             List<Course> courses = courseRepo.findByCategoryNameIgnoreCase(subCategory.trim());
             return ResponseEntity.ok(courses);
         } else {
-            return new ResponseEntity<>("Category or subcategory " + category + " does not exist!", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Category or subcategory " + "'" + category + "/" + subCategory + "'" + " does not exist!", HttpStatus.NOT_FOUND);
         }
     }
 
