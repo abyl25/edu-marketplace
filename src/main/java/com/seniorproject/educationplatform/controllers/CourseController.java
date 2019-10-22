@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/courses")
+@RequestMapping("/api")
 public class CourseController {
     private final CourseService courseService;
 
@@ -24,13 +24,13 @@ public class CourseController {
         this.courseService = courseService;
     }
 
-    @GetMapping
+    @GetMapping("/courses")
     public List<Course> getCourses() {
 //        Pageable firstPage = PageRequest.of(0, 20); // Page<Course> // courseRepo.findAll(firstPage);
         return courseService.getCourses();
     }
 
-    @GetMapping("/{courseId}")
+    @GetMapping("/courses/{courseId}")
     public Course getCourseById(@PathVariable Long courseId) {
         Optional<Course> optionalCourse = courseService.getCourseById(courseId);
         Course course = null;
@@ -40,63 +40,76 @@ public class CourseController {
         return course;
     }
 
-    @PostMapping
+    @PostMapping("/courses")
     public ResponseEntity createCourse(@Valid @RequestBody CreateCourseReq createCourseReq) {
-        Course newCourse = courseService.createCourse(createCourseReq);
-        return ResponseEntity.ok(newCourse);
+        System.out.println(createCourseReq);
+//        Course newCourse = courseService.createCourse(createCourseReq);
+        return ResponseEntity.ok("newCourse");
     }
 
-    @PutMapping
+    @PutMapping("/courses")
     public ResponseEntity addCourseInfo(@Valid @RequestBody AddCourseInfoDto addCourseInfoDto) {
         Course updatedCourse = courseService.addCourseInfo(addCourseInfoDto);
         return ResponseEntity.ok(updatedCourse);
     }
 
-    @RequestMapping(value = "/reqs", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
+    @RequestMapping(value = "/courses/reqs", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
     public ResponseEntity addCourseReqs(@Valid @RequestBody AddCourseReq courseReq) {
         courseService.addCourseReqs(courseReq);
         return ResponseEntity.ok("Course requirements added");
     }
 
-    @RequestMapping(value = "/goals", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
+    @RequestMapping(value = "/courses/goals", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
     public ResponseEntity addCourseGoals(@Valid @RequestBody AddCourseGoal courseGoal) {
         courseService.addCourseGoals(courseGoal);
         return ResponseEntity.ok("Course goals added");
     }
 
-    @RequestMapping(value = "/target", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
+    @RequestMapping(value = "/courses/target", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
     public ResponseEntity addCourseTarget(@Valid @RequestBody AddCourseTarget addCourseTarget) {
         return courseService.addCourseTarget(addCourseTarget);
     }
 
-    @DeleteMapping("/{courseId}")
+    @DeleteMapping("/courses/{courseId}")
     public void removeCourse(@PathVariable Long courseId) {
         courseService.removeCourse(courseId);
     }
 
-    @GetMapping("/link/{permaLink}")
+    @GetMapping("/courses/link/{permaLink}")
     public Course getCourseByPermaLink(@PathVariable String permaLink) {
         return courseService.getCourseByPermalink(permaLink);
     }
 
-    @GetMapping("/category/{categoryName}")
+    @GetMapping("/courses/category/{categoryName}")
     public ResponseEntity getCoursesByCategoryName(@PathVariable String categoryName) throws Exception {
         return courseService.getAllCoursesByRootCategory(categoryName);
     }
 
-    @GetMapping("/category/{categoryName}/{subCategoryName}")
+    @GetMapping("/courses/category/{categoryName}/{subCategoryName}")
     public ResponseEntity getCoursesBySubCategoryName(@PathVariable String categoryName, @PathVariable String subCategoryName) throws Exception {
         return courseService.getCoursesByCategory(categoryName, subCategoryName);
     }
 
-    @GetMapping("/topic/{topicName}")
+    @GetMapping("/courses/topic/{topicName}")
     public ResponseEntity getCoursesByTopicName(@PathVariable String topicName) {
         return courseService.getCoursesByTopic(topicName);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/courses/search")
     public List<ESCourse> searchCourses(@RequestParam("q") String search) {
         return courseService.searchCourses(search);
+    }
+
+    @GetMapping("/instructor/{id}/courses")
+    public ResponseEntity getCoursesByInstructor(@PathVariable Long id) {
+        List<Course> courses = courseService.getCoursesByInstructor(id);
+        return ResponseEntity.ok(courses);
+    }
+
+    @GetMapping("/instructor/{id}/courses/{courseId}")
+    public ResponseEntity getCourseByInstructor(@PathVariable("id") Long instructorId, @PathVariable("courseId") Long courseId) {
+        Course course = courseService.getCourseByInstructor(instructorId, courseId);
+        return ResponseEntity.ok(course);
     }
 
 }

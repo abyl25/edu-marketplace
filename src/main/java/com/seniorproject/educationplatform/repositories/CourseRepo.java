@@ -22,6 +22,8 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
 
     List<Course> findByInstructorId(Long id);
 
+    Course findByIdAndInstructorId(Long id, Long instructor_id);
+
 //    @Query(value = "SELECT c.name FROM Course c WHERE name=:name1", nativeQuery = true)
 //    Course fetchByName(@Param("name1") String name);
 }

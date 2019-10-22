@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-@GroupSequence({AddCourseInfoDto.class, MySequence.class})
+@GroupSequence({CreateCourseReq.class, MySequence.class})
 public class CreateCourseReq {
 
     @NotBlank(message = "Title is empty")

@@ -214,6 +214,10 @@ public class CourseService {
         return courseRepo.findByInstructorId(instructorId);
     }
 
+    public Course getCourseByInstructor(Long instructorId, Long courseId) {
+        return courseRepo.findByIdAndInstructorId(courseId, instructorId);
+    }
+
     private String createPermaLink(String name) {
         return name.toLowerCase()
                 .replaceAll("[_!@#$%^&*()-=+:.,|]", " ")
