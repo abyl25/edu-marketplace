@@ -10,8 +10,11 @@ import javax.validation.GroupSequence;
 import javax.validation.constraints.*;
 
 @Data
-@GroupSequence({AddCourseDto.class, MySequence.class})
-public class AddCourseDto {
+@GroupSequence({AddCourseInfoDto.class, MySequence.class})
+public class AddCourseInfoDto {
+    @NotNull(message = "Course Id is empty")
+    private Long courseId;
+
     @NotBlank(message = "Title is empty")
     @Size(min = 5, message = "Minimum title length: 5 characters", groups = MySequence.First.class)
     @TitleExists(groups = MySequence.Second.class)
@@ -22,7 +25,6 @@ public class AddCourseDto {
     private String subtitle;
 
     @NotNull(message = "Instructor is empty")
-//    @Size(min = 2, message = "Minimum first name length: 2 characters", groups = MySequence.First.class)
     private Long instructorId;
 
     @NotBlank(message = "Description is empty")
@@ -30,7 +32,6 @@ public class AddCourseDto {
     private String description;
 
     @NotBlank(message = "Level is empty")
-//    @Size(min = 2, message = "Minimum level length: 2 characters", groups = MySequence.First.class)
     private String level;
 
     @NotBlank(message = "Language is empty")
@@ -48,7 +49,12 @@ public class AddCourseDto {
     @CategoryExists(groups = MySequence.First.class)
     private String category;
 
+//    @NotBlank(message = "Subcategory is empty")
+//    @CategoryExists(groups = MySequence.First.class)
+//    private String subcategory;
+
     @NotBlank(message = "Topic is empty")
     @TopicExists(groups = MySequence.First.class)
     private String topic;
+
 }

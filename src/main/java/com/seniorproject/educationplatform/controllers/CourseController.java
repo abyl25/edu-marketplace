@@ -1,10 +1,7 @@
 package com.seniorproject.educationplatform.controllers;
 
 import com.seniorproject.educationplatform.ESModels.ESCourse;
-import com.seniorproject.educationplatform.dto.course.AddCourseDto;
-import com.seniorproject.educationplatform.dto.course.AddCourseGoal;
-import com.seniorproject.educationplatform.dto.course.AddCourseReq;
-import com.seniorproject.educationplatform.dto.course.AddCourseTarget;
+import com.seniorproject.educationplatform.dto.course.*;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.services.CourseService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +13,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/courses")
-@Slf4j
 public class CourseController {
     private final CourseService courseService;
 
@@ -44,20 +41,26 @@ public class CourseController {
     }
 
     @PostMapping
-    public ResponseEntity addCourse(@Valid @RequestBody AddCourseDto course) {
-        Course newCourse = courseService.addCourse(course);
+    public ResponseEntity createCourse(@Valid @RequestBody CreateCourseReq createCourseReq) {
+        Course newCourse = courseService.createCourse(createCourseReq);
         return ResponseEntity.ok(newCourse);
     }
 
+    @PutMapping
+    public ResponseEntity addCourseInfo(@Valid @RequestBody AddCourseInfoDto addCourseInfoDto) {
+        Course updatedCourse = courseService.addCourseInfo(addCourseInfoDto);
+        return ResponseEntity.ok(updatedCourse);
+    }
+
     @RequestMapping(value = "/reqs", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
-    public ResponseEntity addCourseReqs(@Valid @RequestBody AddCourseReq[] courseReqs) {
-        courseService.addCourseReqs(courseReqs);
+    public ResponseEntity addCourseReqs(@Valid @RequestBody AddCourseReq courseReq) {
+        courseService.addCourseReqs(courseReq);
         return ResponseEntity.ok("Course requirements added");
     }
 
     @RequestMapping(value = "/goals", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
-    public ResponseEntity addCourseGoals(@Valid @RequestBody AddCourseGoal[] courseGoals) {
-        courseService.addCourseGoals(courseGoals);
+    public ResponseEntity addCourseGoals(@Valid @RequestBody AddCourseGoal courseGoal) {
+        courseService.addCourseGoals(courseGoal);
         return ResponseEntity.ok("Course goals added");
     }
 
