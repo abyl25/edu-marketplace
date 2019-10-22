@@ -1,4 +1,4 @@
-package com.seniorproject.educationplatform.dto;
+package com.seniorproject.educationplatform.dto.auth;
 
 import com.seniorproject.educationplatform.validators.MySequence;
 import com.seniorproject.educationplatform.validators.PasswordMatches;

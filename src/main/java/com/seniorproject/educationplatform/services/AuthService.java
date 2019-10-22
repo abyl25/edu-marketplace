@@ -1,8 +1,8 @@
 package com.seniorproject.educationplatform.services;
 
-import com.seniorproject.educationplatform.dto.LoginRequestDto;
-import com.seniorproject.educationplatform.dto.PasswordUpdateDto;
-import com.seniorproject.educationplatform.dto.SignUpRequestDto;
+import com.seniorproject.educationplatform.dto.auth.LoginRequestDto;
+import com.seniorproject.educationplatform.dto.auth.PasswordUpdateDto;
+import com.seniorproject.educationplatform.dto.auth.SignUpRequestDto;
 import com.seniorproject.educationplatform.exception.CustomException;
 import com.seniorproject.educationplatform.models.Cart;
 import com.seniorproject.educationplatform.models.PasswordResetToken;
@@ -18,10 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,7 +30,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.*;
 

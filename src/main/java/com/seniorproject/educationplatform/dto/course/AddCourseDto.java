@@ -1,4 +1,4 @@
-package com.seniorproject.educationplatform.dto;
+package com.seniorproject.educationplatform.dto.course;
 
 import com.seniorproject.educationplatform.validators.CategoryExists;
 import com.seniorproject.educationplatform.validators.MySequence;

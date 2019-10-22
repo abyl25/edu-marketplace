@@ -3,9 +3,14 @@ package com.seniorproject.educationplatform.services;
 import com.seniorproject.educationplatform.ESModels.ESCourse;
 import com.seniorproject.educationplatform.ESModels.ESUser;
 import com.seniorproject.educationplatform.ESRepos.CourseSearchRepo;
-import com.seniorproject.educationplatform.dto.AddCourseDto;
+import com.seniorproject.educationplatform.dto.course.AddCourseDto;
+import com.seniorproject.educationplatform.dto.course.AddCourseGoal;
+import com.seniorproject.educationplatform.dto.course.AddCourseReq;
+import com.seniorproject.educationplatform.dto.course.AddCourseTarget;
 import com.seniorproject.educationplatform.models.*;
+import com.seniorproject.educationplatform.repositories.CourseGoalRepo;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
+import com.seniorproject.educationplatform.repositories.CourseRequirementRepo;
 import com.seniorproject.educationplatform.repositories.UserRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.common.unit.Fuzziness;
@@ -20,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,16 +36,21 @@ import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
 public class CourseService {
     private CategoryService categoryService;
     private CourseRepo courseRepo;
+    private CourseRequirementRepo courseRequirementRepo;
+    private CourseGoalRepo courseGoalRepo;
     private CourseSearchRepo courseSearchRepo;
     private UserService userService;
     private UserRepo userRepo;
     private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
-    public CourseService(CategoryService categoryService, CourseRepo courseRepo, CourseSearchRepo courseSearchRepo,
-                UserService userService, UserRepo userRepo, ElasticsearchOperations elasticsearchOperations) {
+    public CourseService(CategoryService categoryService, CourseRepo courseRepo, CourseRequirementRepo courseRequirementRepo,
+             CourseGoalRepo courseGoalRepo, CourseSearchRepo courseSearchRepo, UserService userService, UserRepo userRepo,
+             ElasticsearchOperations elasticsearchOperations) {
         this.categoryService = categoryService;
         this.courseRepo = courseRepo;
+        this.courseRequirementRepo = courseRequirementRepo;
+        this.courseGoalRepo = courseGoalRepo;
         this.courseSearchRepo = courseSearchRepo;
         this.userService = userService;
         this.userRepo = userRepo;
@@ -77,6 +88,38 @@ public class CourseService {
         return course;
     }
 
+    public void addCourseReqs(AddCourseReq[] addCourseReqs) {
+        List<CourseRequirement> courseRequirements = new ArrayList<>();
+        for (AddCourseReq addCourseReq: addCourseReqs) {
+            CourseRequirement courseRequirement = courseReqDtoToEntity(addCourseReq);
+            courseRequirements.add(courseRequirement);
+        }
+        courseRequirementRepo.saveAll(courseRequirements);
+        System.out.println("Course reqs added");
+    }
+
+    public void addCourseGoals(AddCourseGoal[] addCourseGoals) {
+        List<CourseGoal> courseGoals = new ArrayList<>();
+        for (AddCourseGoal addCourseGoal: addCourseGoals) {
+            CourseGoal courseGoal = courseGoalDtoToEntity(addCourseGoal);
+            courseGoals.add(courseGoal);
+        }
+        courseGoalRepo.saveAll(courseGoals);
+        System.out.println("Course goals added");
+    }
+
+    public ResponseEntity addCourseTarget(AddCourseTarget addCourseTarget) {
+        AddCourseReq[] courseReqs = addCourseTarget.getReqs().toArray(new AddCourseReq[0]);
+        System.out.println("reqs: " + Arrays.toString(courseReqs));
+        addCourseReqs(courseReqs);
+
+        AddCourseGoal[] courseGoals = addCourseTarget.getGoals().toArray(new AddCourseGoal[0]);
+        System.out.println("goals: " + Arrays.toString(courseGoals));
+        addCourseGoals(courseGoals);
+
+        return ResponseEntity.ok("course targets added");
+    }
+
     public void removeCourse(Long id) {
         courseRepo.deleteById(id);
 //        courseSearchRepo.deleteById(id);
@@ -92,10 +135,6 @@ public class CourseService {
                 .type(MultiMatchQueryBuilder.Type.BEST_FIELDS))
             .build();
         return elasticsearchOperations.queryForList(searchQuery, ESCourse.class);
-    }
-
-    public void courseRequirements(List<CourseRequirement> courseRequirements) {
-
     }
 
     public boolean courseTitleExists(String title) {
@@ -179,6 +218,8 @@ public class CourseService {
         return null;
     }
 
+
+    // DTO TO ENTITY and VICE VERSA MAPPERS
     private Course courseDtoToEntity(AddCourseDto addCourseDto) {
         log.info("LOG: CourseDto: " + addCourseDto);
         Course course = new Course();
@@ -213,6 +254,22 @@ public class CourseService {
         esCourse.setCategory(course.getCategory().getName());
         esCourse.setTopic(course.getTopic().getName());
         return esCourse;
+    }
+
+    private CourseRequirement courseReqDtoToEntity(AddCourseReq courseReq) {
+        CourseRequirement courseRequirement = new CourseRequirement();
+        courseRequirement.setName(courseReq.getName());
+        Course course = courseRepo.findById(courseReq.getCourseId()).orElse(null);
+        courseRequirement.setCourse(course);
+        return courseRequirement;
+    }
+
+    private CourseGoal courseGoalDtoToEntity(AddCourseGoal addCourseGoal) {
+        CourseGoal courseGoal = new CourseGoal();
+        courseGoal.setName(addCourseGoal.getName());
+        Course course = courseRepo.findById(addCourseGoal.getCourseId()).orElse(null);
+        courseGoal.setCourse(course);
+        return courseGoal;
     }
 
 }

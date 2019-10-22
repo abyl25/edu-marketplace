@@ -1,14 +1,14 @@
 package com.seniorproject.educationplatform.controllers;
 
 import com.seniorproject.educationplatform.ESModels.ESCourse;
-import com.seniorproject.educationplatform.dto.AddCourseDto;
+import com.seniorproject.educationplatform.dto.course.AddCourseDto;
+import com.seniorproject.educationplatform.dto.course.AddCourseGoal;
+import com.seniorproject.educationplatform.dto.course.AddCourseReq;
+import com.seniorproject.educationplatform.dto.course.AddCourseTarget;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.services.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,6 +47,23 @@ public class CourseController {
     public ResponseEntity addCourse(@Valid @RequestBody AddCourseDto course) {
         Course newCourse = courseService.addCourse(course);
         return ResponseEntity.ok(newCourse);
+    }
+
+    @RequestMapping(value = "/reqs", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
+    public ResponseEntity addCourseReqs(@Valid @RequestBody AddCourseReq[] courseReqs) {
+        courseService.addCourseReqs(courseReqs);
+        return ResponseEntity.ok("Course requirements added");
+    }
+
+    @RequestMapping(value = "/goals", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
+    public ResponseEntity addCourseGoals(@Valid @RequestBody AddCourseGoal[] courseGoals) {
+        courseService.addCourseGoals(courseGoals);
+        return ResponseEntity.ok("Course goals added");
+    }
+
+    @RequestMapping(value = "/target", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
+    public ResponseEntity addCourseTarget(@Valid @RequestBody AddCourseTarget addCourseTarget) {
+        return courseService.addCourseTarget(addCourseTarget);
     }
 
     @DeleteMapping("/{courseId}")

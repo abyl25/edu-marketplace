@@ -1,6 +1,6 @@
 package com.seniorproject.educationplatform.validators;
 
-import com.seniorproject.educationplatform.dto.PasswordUpdateDto;
+import com.seniorproject.educationplatform.dto.auth.PasswordUpdateDto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

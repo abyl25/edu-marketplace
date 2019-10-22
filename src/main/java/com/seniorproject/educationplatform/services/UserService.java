@@ -1,7 +1,7 @@
 package com.seniorproject.educationplatform.services;
 
 import com.seniorproject.educationplatform.ESModels.ESUser;
-import com.seniorproject.educationplatform.dto.SignUpRequestDto;
+import com.seniorproject.educationplatform.dto.auth.SignUpRequestDto;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;

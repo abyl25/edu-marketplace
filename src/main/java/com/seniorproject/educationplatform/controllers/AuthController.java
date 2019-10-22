@@ -1,11 +1,10 @@
 package com.seniorproject.educationplatform.controllers;
 
-import com.seniorproject.educationplatform.dto.LoginRequestDto;
-import com.seniorproject.educationplatform.dto.PasswordUpdateDto;
-import com.seniorproject.educationplatform.dto.SignUpRequestDto;
+import com.seniorproject.educationplatform.dto.auth.LoginRequestDto;
+import com.seniorproject.educationplatform.dto.auth.PasswordUpdateDto;
+import com.seniorproject.educationplatform.dto.auth.SignUpRequestDto;
 import com.seniorproject.educationplatform.exception.CustomException;
 import com.seniorproject.educationplatform.models.User;
-import com.seniorproject.educationplatform.models.VerificationToken;
 import com.seniorproject.educationplatform.security.JwtUser;
 import com.seniorproject.educationplatform.services.AuthService;
 import com.seniorproject.educationplatform.services.UserService;
