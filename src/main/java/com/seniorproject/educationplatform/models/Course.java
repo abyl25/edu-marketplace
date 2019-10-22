@@ -1,16 +1,15 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
@@ -53,6 +52,25 @@ public class Course {
     @JoinColumn(name = "instructor_id")
     private User instructor;  // FK
 
+    // @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIgnoreProperties("course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<CourseGoal> courseGoals = new ArrayList<>();
+
+    @JsonIgnoreProperties("course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<CourseRequirement> courseRequirements = new ArrayList<>();
+
+    @JsonIgnoreProperties("parent")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Category category;
+
+    @JsonIgnoreProperties("subcategory")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Topic topic;
+
 //    @JsonIgnoreProperties("course")
 //    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
 //    private List<CourseSection> courseSections = new ArrayList<>();
@@ -64,23 +82,5 @@ public class Course {
 //    @JsonIgnoreProperties("course")
 //    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
 //    private List<CourseOrder> courseOrders = new ArrayList<>();
-
-//    @JsonIgnoreProperties("course")
-//    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-//    private List<CourseGoal> courseGoals = new ArrayList<>();
-
-//    @JsonIgnoreProperties("course")
-//    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-//    private List<CourseRequirement> courseRequirements = new ArrayList<>();
-
-    @JsonIgnoreProperties("parent")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Category category;
-
-    @JsonIgnoreProperties("subcategory")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Topic topic;
 
 }

@@ -168,8 +168,16 @@ public class CourseService {
         return courseRepo.findByTitleIgnoreCase(courseTitle);
     }
 
-    public Course getCourseByPermalink (String permaLink) {
-        return courseRepo.findByPermaLink(permaLink);
+    public boolean courseExistsByPermaLink(String permaLink) {
+        return courseRepo.existsByPermaLink(permaLink);
+    }
+
+    public ResponseEntity getCourseByPermalink (String permaLink) {
+        if(!courseExistsByPermaLink(permaLink)) {
+            return new ResponseEntity<>("Course with permalink " + permaLink + "not found", HttpStatus.NOT_FOUND);
+        }
+        Course course = courseRepo.findByPermaLink(permaLink);
+        return ResponseEntity.ok(course);
     }
 
     public List<Course> getCoursesByCategory(String categoryName) throws Exception {

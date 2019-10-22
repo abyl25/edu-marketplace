@@ -12,6 +12,8 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
 
     Course findByTitleIgnoreCase(String title);
 
+    boolean existsByPermaLink(String permaLink);
+
     Course findByPermaLink(String permaLink);
 
     List<Course> findByCategoryNameIgnoreCase(String categoryName);

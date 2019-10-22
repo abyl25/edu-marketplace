@@ -25,19 +25,20 @@ public class CourseController {
     }
 
     @GetMapping("/courses")
-    public List<Course> getCourses() {
+    public ResponseEntity getCourses() {
 //        Pageable firstPage = PageRequest.of(0, 20); // Page<Course> // courseRepo.findAll(firstPage);
-        return courseService.getCourses();
+        List<Course> courses = courseService.getCourses();
+        return ResponseEntity.ok(courses);
     }
 
     @GetMapping("/courses/{courseId}")
-    public Course getCourseById(@PathVariable Long courseId) {
+    public ResponseEntity getCourseById(@PathVariable Long courseId) {
         Optional<Course> optionalCourse = courseService.getCourseById(courseId);
-        Course course = null;
         if (optionalCourse.isPresent()) {
-            course = optionalCourse.get();
+            Course course = optionalCourse.get();
+            return ResponseEntity.ok(course);
         }
-        return course;
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/courses")
@@ -71,12 +72,13 @@ public class CourseController {
     }
 
     @DeleteMapping("/courses/{courseId}")
-    public void removeCourse(@PathVariable Long courseId) {
+    public ResponseEntity removeCourse(@PathVariable Long courseId) {
         courseService.removeCourse(courseId);
+        return ResponseEntity.ok("Course removed");
     }
 
     @GetMapping("/courses/link/{permaLink}")
-    public Course getCourseByPermaLink(@PathVariable String permaLink) {
+    public ResponseEntity getCourseByPermaLink(@PathVariable String permaLink) {
         return courseService.getCourseByPermalink(permaLink);
     }
 

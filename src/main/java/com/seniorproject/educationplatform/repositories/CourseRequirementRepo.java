@@ -3,6 +3,8 @@ package com.seniorproject.educationplatform.repositories;
 import com.seniorproject.educationplatform.models.CourseRequirement;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CourseRequirementRepo extends JpaRepository<CourseRequirement, Long> {
+import java.util.List;
 
+public interface CourseRequirementRepo extends JpaRepository<CourseRequirement, Long> {
+    List<CourseRequirement> findByCourseId(Long courseId);
 }
