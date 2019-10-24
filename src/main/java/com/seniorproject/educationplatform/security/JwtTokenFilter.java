@@ -27,16 +27,19 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
             if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication auth = jwtTokenProvider.getAuthentication(token);
-                System.out.println("LOG: TokenFilter, authorities: " + auth.getAuthorities());
+                System.out.println("LOG: JwtTokenFilter, authorities: " + auth.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
-            SecurityContextHolder.clearContext();  //this is very important, since it guarantees the user is not authenticated at all
-//            httpServletResponse.sendError(ex.getHttpStatus().value(), ex.getMessage());
+            logger.info("LOG: JwtTokenFilter, exception msg: " + ex.getMessage());
+            SecurityContextHolder.clearContext();
+            httpServletResponse.resetBuffer();
+            httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpServletResponse.setHeader("Content-Type", "application/json");
+            httpServletResponse.getOutputStream().print("{\"errorMessage\":\"You are logged out!\"}");
+            httpServletResponse.flushBuffer();
             return;
         }
-
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 

@@ -14,17 +14,17 @@ import javax.validation.constraints.Size;
 public class SignUpRequestDto {
     @NotBlank(message = "First name is empty")
     @Size(min = 2, message = "Minimum first name length: 2 characters", groups = MySequence.First.class)
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "No numbers are allowed for first name", groups = MySequence.Second.class)
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "No numbers and signs are allowed for first name", groups = MySequence.Second.class)
     private String firstName;
 
     @NotBlank(message = "Last name is empty")
     @Size(min = 2, message = "Minimum last name length: 2 characters", groups = MySequence.First.class)
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "No numbers are allowed for last name", groups = MySequence.Second.class)
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "No numbers and signs are allowed for last name", groups = MySequence.Second.class)
     private String lastName;
 
     @NotBlank(message = "Username is empty")
     @Size(min = 2, message = "Minimum username length: 2 characters", groups = MySequence.First.class)
-    @Pattern(regexp = "^[.a-zA-Z0-9]+$", message = "Allowed: [.a-zA-Z0-9]", groups = MySequence.Second.class)
+    @Pattern(regexp = "^[.a-zA-Z0-9]+$", message = "Alphanumeric and dot sign only allowed", groups = MySequence.Second.class)
     private String userName;
 
     @NotBlank(message = "Email is empty")

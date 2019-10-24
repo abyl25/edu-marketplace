@@ -4,6 +4,7 @@ import com.seniorproject.educationplatform.dto.auth.LoginRequestDto;
 import com.seniorproject.educationplatform.dto.auth.PasswordUpdateDto;
 import com.seniorproject.educationplatform.dto.auth.SignUpRequestDto;
 import com.seniorproject.educationplatform.exception.CustomException;
+import com.seniorproject.educationplatform.exception.UsernameAlreadyExistsException;
 import com.seniorproject.educationplatform.models.Cart;
 import com.seniorproject.educationplatform.models.PasswordResetToken;
 import com.seniorproject.educationplatform.models.Role;
@@ -95,7 +96,7 @@ public class AuthService {
             verificationTokenService.createVerification(user);
         } else {
             log.info("AuthService signup: Username is already in use");
-            throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new UsernameAlreadyExistsException("Username is already in use");
         }
     }
 
