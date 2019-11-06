@@ -10,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.sql.Date;
+import java.util.Date;
 
 @Entity
 @Data
@@ -22,21 +22,20 @@ public class Review {
     @JsonIgnoreProperties("student")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_id")
-    private User student;  // FK
-    // former: Student student;
+    private User student;
 
     @JsonIgnoreProperties("course")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
-    private Course course;  // FK
+    private Course course;
 
     private String content;
 
-    private float rating; // Double? Float?
+    private float rating;
 
     private Date addedDate;
 
-    private int helpfulCount;
+    private int helpfulCount = 0;
 
     private boolean featured = false;
 

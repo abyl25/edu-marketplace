@@ -71,13 +71,13 @@ public class Course {
     @JoinColumn
     private Topic topic;
 
-//    @JsonIgnoreProperties("course")
-//    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-//    private List<CourseSection> courseSections = new ArrayList<>();
+    @JsonIgnoreProperties("course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<Review> reviews = new ArrayList<>();
 
 //    @JsonIgnoreProperties("course")
 //    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-//    private List<Review> reviews = new ArrayList<>();
+//    private List<CourseSection> courseSections = new ArrayList<>();
 
 //    @JsonIgnoreProperties("course")
 //    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)

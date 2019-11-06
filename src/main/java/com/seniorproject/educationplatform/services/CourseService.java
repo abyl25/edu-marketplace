@@ -22,15 +22,16 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
 
 @Slf4j
 @Service
 public class CourseService {
+    private CourseOrderService courseOrderService;
     private CategoryService categoryService;
     private CourseRepo courseRepo;
     private CourseRequirementRepo courseRequirementRepo;
@@ -41,9 +42,10 @@ public class CourseService {
     private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
-    public CourseService(CategoryService categoryService, CourseRepo courseRepo, CourseRequirementRepo courseRequirementRepo,
-             CourseGoalRepo courseGoalRepo, CourseSearchRepo courseSearchRepo, UserService userService, UserRepo userRepo,
-             ElasticsearchOperations elasticsearchOperations) {
+    public CourseService(CourseOrderService courseOrderService, CategoryService categoryService, CourseRepo courseRepo, CourseRequirementRepo courseRequirementRepo,
+                         CourseGoalRepo courseGoalRepo, CourseSearchRepo courseSearchRepo, UserService userService, UserRepo userRepo,
+                         ElasticsearchOperations elasticsearchOperations) {
+        this.courseOrderService = courseOrderService;
         this.categoryService = categoryService;
         this.courseRepo = courseRepo;
         this.courseRequirementRepo = courseRequirementRepo;
@@ -224,6 +226,11 @@ public class CourseService {
 
     public Course getCourseByInstructor(Long instructorId, Long courseId) {
         return courseRepo.findByIdAndInstructorId(courseId, instructorId);
+    }
+
+    public List<User> getEnrolledStudents(Long courseId) {
+        List<CourseOrder> courseOrders = courseOrderService.getOrdersByCourseId(courseId);
+        return courseOrders.stream().map(CourseOrder::getStudent).collect(Collectors.toList());
     }
 
     private String createPermaLink(String name) {

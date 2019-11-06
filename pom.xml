@@ -92,6 +92,20 @@
             <scope>test</scope>
         </dependency>
 
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-starter-aws</artifactId>-->
+<!--            <version>2.1.3.RELEASE</version>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-aws-jdbc -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-aws-jdbc</artifactId>
+            <version>2.1.3.RELEASE</version>
+        </dependency>
+
         <!-- JSON Web Token lib --> <!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
