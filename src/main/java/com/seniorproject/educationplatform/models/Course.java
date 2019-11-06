@@ -31,11 +31,9 @@ public class Course {
 
     private String language;
 
-    private String caption; // CC, array
+    private String caption;
 
-    // rating ?
-
-    private long price;  // price_off ?
+    private long price;
 
     private Date addedDate;
 
@@ -50,7 +48,7 @@ public class Course {
     @JsonIgnoreProperties({"password", "roles", "status", "enabled"})
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "instructor_id")
-    private User instructor;  // FK
+    private User instructor;
 
     // @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @JsonIgnoreProperties("course")

@@ -3,7 +3,7 @@ package com.seniorproject.educationplatform.services;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.models.VerificationToken;
 import com.seniorproject.educationplatform.repositories.UserRepo;
-import com.seniorproject.educationplatform.repositories.VerificationTokenRepository;
+import com.seniorproject.educationplatform.repositories.VerificationTokenRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,20 +13,20 @@ import java.time.LocalDateTime;
 @Service
 public class VerificationTokenService {
     private UserRepo userRepository;
-    private VerificationTokenRepository verificationTokenRepository;
+    private VerificationTokenRepo verificationTokenRepo;
     private EmailSenderService emailSenderService;
 
     @Autowired
-    public VerificationTokenService(UserRepo userRepository, VerificationTokenRepository verificationTokenRepository, EmailSenderService emailSenderService) {
+    public VerificationTokenService(UserRepo userRepository, VerificationTokenRepo verificationTokenRepo, EmailSenderService emailSenderService) {
         this.userRepository = userRepository;
-        this.verificationTokenRepository = verificationTokenRepository;
+        this.verificationTokenRepo = verificationTokenRepo;
         this.emailSenderService = emailSenderService;
     }
 
     public void createVerification(User user) {
         VerificationToken verificationToken = new VerificationToken();
         verificationToken.setUser(user);
-        verificationTokenRepository.save(verificationToken);
+        verificationTokenRepo.save(verificationToken);
 
         String to = user.getEmail();
         String from = "EduMarketplace Team <abylay.tastanbekov@nu.edu.kz>";
@@ -38,7 +38,7 @@ public class VerificationTokenService {
     }
 
     public ResponseEntity verifyAccount(String token) {
-        VerificationToken verificationToken = verificationTokenRepository.findByToken(token);
+        VerificationToken verificationToken = verificationTokenRepo.findByToken(token);
         if (verificationToken == null) {
             return ResponseEntity.badRequest().body("Broken token");
         }
@@ -51,7 +51,7 @@ public class VerificationTokenService {
         User user = verificationToken.getUser();
         user.setEnabled(true);
         userRepository.save(user);
-        verificationTokenRepository.save(verificationToken);
+        verificationTokenRepo.save(verificationToken);
 
         return ResponseEntity.ok("You have successfully verified your account!");
     }

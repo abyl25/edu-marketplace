@@ -20,8 +20,8 @@ public class ReviewService {
         this.courseService = courseService;
     }
 
-    public List<Review> getReviews() {
-        return reviewRepo.findAll();
+    public List<Review> getReviews(Long courseId) {
+        return reviewRepo.findByCourseId(courseId);
     }
 
     public Review getReviewById(Long reviewId) {
@@ -57,6 +57,16 @@ public class ReviewService {
             review.setFeatured(true);
         }
         reviewRepo.save(review);
+    }
+
+    public int getReviewCountByCourse(Long reviewId) {
+        return reviewRepo.countByCourseId(reviewId);
+    }
+
+    public float getAverageCourseRating(Long courseId) {
+        List<Review> reviews = getReviews(courseId);
+        Float sum = reviews.stream().map(Review::getRating).reduce((float) 0, Float::sum);
+        return sum/reviews.size();
     }
 
     // Mappers
