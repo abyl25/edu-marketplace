@@ -37,6 +37,10 @@ public class CourseOrderService {
         return courseOrderRepo.findByCourseId(courseId);
     }
 
+    public boolean checkIfStudentPurchasedCourse(Long studentId, Long courseId) {
+        return courseOrderRepo.existsByStudentIdAndCourseId(studentId, courseId);
+    }
+
     // Mappers
     private CourseOrder courseOrderDtoToEntity(CourseOrderReqDto courseOrderReqDto) {
         CourseOrder courseOrder = new CourseOrder();
