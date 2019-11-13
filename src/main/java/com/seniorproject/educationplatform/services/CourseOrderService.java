@@ -5,6 +5,7 @@ import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.models.CourseOrder;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.repositories.CourseOrderRepo;
+import com.seniorproject.educationplatform.repositories.CourseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,13 @@ import java.util.List;
 @Service
 public class CourseOrderService {
     private CourseOrderRepo courseOrderRepo;
-    private CourseService courseService;
+    private CourseRepo courseRepo;
     private UserService userService;
 
     @Autowired
-    public CourseOrderService(CourseOrderRepo courseOrderRepo, CourseService courseService, UserService userService) {
+    public CourseOrderService(CourseOrderRepo courseOrderRepo, CourseRepo courseRepo, UserService userService) {
         this.courseOrderRepo = courseOrderRepo;
-        this.courseService = courseService;
+        this.courseRepo = courseRepo;
         this.userService = userService;
     }
 
@@ -46,7 +47,7 @@ public class CourseOrderService {
         CourseOrder courseOrder = new CourseOrder();
         User user = userService.getUserById(courseOrderReqDto.getStudentId()).get();
         courseOrder.setStudent(user);
-        Course course = courseService.getCourseById(courseOrderReqDto.getCourseId()).get();
+        Course course = courseRepo.findById(courseOrderReqDto.getCourseId()).get();
         courseOrder.setCourse(course);
         courseOrder.setPrice(courseOrderReqDto.getPrice());
         courseOrder.setOrderDate(new Date());

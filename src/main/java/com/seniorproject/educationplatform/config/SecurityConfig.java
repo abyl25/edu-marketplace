@@ -55,8 +55,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.POST, AUTH + "/forgotPassword").permitAll()
             .antMatchers(HttpMethod.GET, AUTH + "/validatePasswordResetToken").permitAll()
             .antMatchers(HttpMethod.POST, AUTH + "/updatePassword").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
-            .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
-            .antMatchers("/api/courses/**").hasAuthority("Instructor")
+
+//            .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/courses/**").hasAuthority("Instructor")
+            .antMatchers("/api/courses/**").permitAll()
+//            .antMatchers(HttpMethod.POST,"/api/courses/target").hasAuthority("Instructor")
+            .antMatchers("/api/courses/target").permitAll()
+
             .antMatchers(HttpMethod.GET,"/api/instructor/*/courses/*").permitAll()
             .antMatchers("/api/cart/**").permitAll()
             .antMatchers(ADMIN_ENDPOINT).hasRole("Admin")

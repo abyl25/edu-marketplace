@@ -43,15 +43,27 @@ public class CourseController {
 
     @PostMapping("/courses")
     public ResponseEntity createCourse(@Valid @RequestBody CreateCourseReq createCourseReq) {
-        System.out.println(createCourseReq);
-//        Course newCourse = courseService.createCourse(createCourseReq);
-        return ResponseEntity.ok("newCourse");
+        System.out.println("LOG: CreateCourseReq: " + createCourseReq);
+        Course newCourse = courseService.createCourse(createCourseReq);
+        return ResponseEntity.ok(newCourse);
     }
 
-    @PutMapping("/courses")
-    public ResponseEntity addCourseInfo(@Valid @RequestBody AddCourseInfoDto addCourseInfoDto) {
-        Course updatedCourse = courseService.addCourseInfo(addCourseInfoDto);
+    @DeleteMapping("/courses/{courseId}")
+    public ResponseEntity removeCourse(@PathVariable Long courseId) {
+        courseService.removeCourse(courseId);
+        return ResponseEntity.ok("Course removed");
+    }
+
+    @PutMapping("/courses/{courseId}")
+    public ResponseEntity updateCourseMainInfo(@PathVariable Long courseId, @Valid @RequestBody CreateCourseReq updateCourse) {
+        System.out.println("LOG: updateCourseReq: " + updateCourse);
+        Course updatedCourse = courseService.updateCourseMainInfo(courseId, updateCourse);
         return ResponseEntity.ok(updatedCourse);
+    }
+
+    @GetMapping("/courses/{id}/target")
+    public ResponseEntity getCourseTarget(@PathVariable Long id) {
+        return courseService.getCourseTarget(id);
     }
 
     @RequestMapping(value = "/courses/reqs", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
@@ -68,13 +80,22 @@ public class CourseController {
 
     @RequestMapping(value = "/courses/target", method = RequestMethod.POST, consumes="application/json", produces = "application/json")
     public ResponseEntity addCourseTarget(@Valid @RequestBody AddCourseTarget addCourseTarget) {
+        System.out.println("LOG: addCourseTarget: " + addCourseTarget);
         return courseService.addCourseTarget(addCourseTarget);
     }
 
-    @DeleteMapping("/courses/{courseId}")
-    public ResponseEntity removeCourse(@PathVariable Long courseId) {
-        courseService.removeCourse(courseId);
-        return ResponseEntity.ok("Course removed");
+    @DeleteMapping("/courses/{id}/req/{name}")
+    public ResponseEntity removeCourseReq(@PathVariable Long id, @PathVariable String name) {
+        System.out.println("LOG: removeCourseReq(): req name: " + name);
+        courseService.removeCourseReq(id, name);
+        return ResponseEntity.ok("Course req deleted");
+    }
+
+    @DeleteMapping("/courses/{id}/goal/{name}")
+    public ResponseEntity removeCourseGoal(@PathVariable Long id, @PathVariable String name) {
+        System.out.println("LOG: removeCourseGoal(): goal name: " + name);
+        courseService.removeCourseGoal(id, name);
+        return ResponseEntity.ok("Course goal deleted");
     }
 
     @GetMapping("/courses/link/{permaLink}")

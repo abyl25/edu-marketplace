@@ -50,16 +50,8 @@ public class Course {
     @JoinColumn(name = "instructor_id")
     private User instructor;
 
-    // @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-    @JsonIgnoreProperties("course")
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private List<CourseGoal> courseGoals = new ArrayList<>();
-
-    @JsonIgnoreProperties("course")
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
-    private List<CourseRequirement> courseRequirements = new ArrayList<>();
-
-    @JsonIgnoreProperties("parent")
+//    @JsonIgnoreProperties("parent")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Category category;
@@ -68,6 +60,15 @@ public class Course {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Topic topic;
+
+    // @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+    @JsonIgnoreProperties("course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<CourseGoal> courseGoals = new ArrayList<>();
+
+    @JsonIgnoreProperties("course")
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    private List<CourseRequirement> courseRequirements = new ArrayList<>();
 
     @JsonIgnoreProperties("course")
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)

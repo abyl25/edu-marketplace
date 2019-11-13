@@ -1,6 +1,7 @@
 package com.seniorproject.educationplatform.models;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
@@ -19,7 +20,8 @@ public class CourseGoal {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @JsonIgnoreProperties("courseGoals")
+//    @JsonIgnoreProperties("courseGoals")
+    @JsonIgnore
     @ManyToOne
     @JoinColumn
     private Course course;

@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface CourseGoalRepo extends JpaRepository<CourseGoal, Long> {
     List<CourseGoal> findByCourseId(Long courseId);
+
+    boolean existsByCourseIdAndName(Long courseId, String requirementName);
+
+    void removeByCourseIdAndName(Long courseId, String name);
 }

@@ -19,17 +19,17 @@ import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
 
 @Slf4j
 @Service
+@Transactional
 public class CourseService {
     private CourseOrderService courseOrderService;
     private CategoryService categoryService;
@@ -65,19 +65,7 @@ public class CourseService {
     }
 
     public Course createCourse(CreateCourseReq createCourseReq) {
-        Course course = createCourseDtoToEntity(createCourseReq);
-        Date date = new Date(System.currentTimeMillis());
-        course.setAddedDate(date);
-        course.setLastUpdate(date);
-
-        String permaLink = createPermaLink(course.getTitle());
-        course.setPermaLink(permaLink);
-
-        return courseRepo.save(course);
-    }
-
-    public Course addCourse(AddCourseInfoDto addCourseInfoDto) {
-        Course course = courseDtoToEntity(addCourseInfoDto);
+        Course course = courseDtoToEntity(createCourseReq);
         Date date = new Date(System.currentTimeMillis());
         course.setAddedDate(date);
         course.setLastUpdate(date);
@@ -95,54 +83,64 @@ public class CourseService {
         ESUser user = userService.userEntityToESUserDocument(course.getInstructor());
         esCourse.setInstructor(user);
 //        courseSearchRepo.save(esCourse);
-
         return course;
     }
 
-    public Course addCourseInfo(AddCourseInfoDto addCourseInfoDto) {
-        Course course = courseRepo.findById(addCourseInfoDto.getCourseId()).orElse(null);
-        course.setTitle(addCourseInfoDto.getTitle());
-        course.setSubtitle(addCourseInfoDto.getSubtitle());
-        course.setDescription(addCourseInfoDto.getDescription());
-        course.setLanguage(addCourseInfoDto.getLanguage());
-        Level level = Level.valueOf(addCourseInfoDto.getLevel().trim());
-        course.setLevel(level);
-        Category category = categoryService.getCategoryByName(addCourseInfoDto.getCategory().trim());
-        course.setCategory(category);
-        Topic topic = categoryService.getTopicByName(addCourseInfoDto.getTopic().trim());
-        course.setTopic(topic);
-        course.setPrice(addCourseInfoDto.getPrice());
-        return course;
+    public ResponseEntity getCourseTarget(Long courseId) {
+        List<CourseRequirement> reqs = courseRequirementRepo.findByCourseId(courseId);
+        List<CourseGoal> goals = courseGoalRepo.findByCourseId(courseId);
+        Map<String, Object> resp = new HashMap<>();
+        Map<String, Object> target = new HashMap<>();
+        target.put("reqs", reqs);
+        target.put("goals", goals);
+        resp.put("target", target);
+        return ResponseEntity.ok(resp);
     }
 
-    public void addCourseReqs(AddCourseReq addCourseReq) {
+    public Course updateCourseMainInfo(Long courseId, CreateCourseReq updateCourse) {
+        Course course = courseRepo.findById(courseId).get();
+        course = setCourseFields(course, updateCourse);
+        return courseRepo.save(course);
+    }
+
+    public List<CourseRequirement> addCourseReqs(AddCourseReq addCourseReq) {
         List<CourseRequirement> courseRequirements = new ArrayList<>();
         for (String req: addCourseReq.getReqs()) {
-            CourseRequirement courseRequirement = courseReqDtoToEntity(addCourseReq);
-            courseRequirement.setName(req);
-            courseRequirements.add(courseRequirement);
+            if (!courseRequirementRepo.existsByCourseIdAndName(addCourseReq.getCourseId(), req)) {
+                CourseRequirement courseRequirement = courseReqDtoToEntity(addCourseReq);
+                courseRequirement.setName(req);
+                courseRequirements.add(courseRequirement);
+            }
         }
-        courseRequirementRepo.saveAll(courseRequirements);
-        System.out.println("Course reqs added");
+        return courseRequirementRepo.saveAll(courseRequirements);
     }
 
-    public void addCourseGoals(AddCourseGoal addCourseGoal) {
+    public List<CourseGoal> addCourseGoals(AddCourseGoal addCourseGoal) {
         List<CourseGoal> courseGoals = new ArrayList<>();
         for (String goal: addCourseGoal.getGoals()) {
-            CourseGoal courseGoal = courseGoalDtoToEntity(addCourseGoal);
-            courseGoal.setName(goal);
-            courseGoals.add(courseGoal);
+            if (!courseGoalRepo.existsByCourseIdAndName(addCourseGoal.getCourseId(), goal)) {
+                CourseGoal courseGoal = courseGoalDtoToEntity(addCourseGoal);
+                courseGoal.setName(goal);
+                courseGoals.add(courseGoal);
+            }
         }
-        courseGoalRepo.saveAll(courseGoals);
-        System.out.println("Course goals added");
+        return courseGoalRepo.saveAll(courseGoals);
     }
 
     public ResponseEntity addCourseTarget(AddCourseTarget addCourseTarget) {
         AddCourseReq addCourseReq = new AddCourseReq(addCourseTarget.getCourseId(), addCourseTarget.getReqs());
-        addCourseReqs(addCourseReq);
+        List<CourseRequirement> reqs = addCourseReqs(addCourseReq);
         AddCourseGoal addCourseGoal = new AddCourseGoal(addCourseTarget.getCourseId(), addCourseTarget.getGoals());
-        addCourseGoals(addCourseGoal);
-        return ResponseEntity.ok("course targets added");
+        List<CourseGoal> goals = addCourseGoals(addCourseGoal);
+        return ResponseEntity.ok("Course target added");
+    }
+
+    public Long removeCourseReq(Long courseId, String name) {
+        return courseRequirementRepo.removeByCourseIdAndName(courseId, name);
+    }
+
+    public void removeCourseGoal(Long courseId, String name) {
+        courseGoalRepo.removeByCourseIdAndName(courseId, name);
     }
 
     public void removeCourse(Long id) {
@@ -262,32 +260,24 @@ public class CourseService {
 
 
     // DTO TO ENTITY and VICE VERSA MAPPERS
-    private Course createCourseDtoToEntity(CreateCourseReq createCourseReq) {
+    private Course courseDtoToEntity(CreateCourseReq createCourseReq) {
         Course course = new Course();
-        course.setTitle(createCourseReq.getTitle().trim());
-        Category category = categoryService.getCategoryById(createCourseReq.getCategoryId());
-        course.setCategory(category);
-        User instructor = userRepo.findById(createCourseReq.getInstructorId()).orElse(null);
-        course.setInstructor(instructor);
-        return course;
+        return setCourseFields(course, createCourseReq);
     }
 
-    private Course courseDtoToEntity(AddCourseInfoDto addCourseInfoDto) {
-        log.info("LOG: CourseDto: " + addCourseInfoDto);
-        Course course = new Course();
-        course.setTitle(addCourseInfoDto.getTitle().trim());
-        course.setSubtitle(addCourseInfoDto.getSubtitle().trim());
-        User instructor = userRepo.findById(addCourseInfoDto.getInstructorId()).orElse(null);
+    private Course setCourseFields(Course course, CreateCourseReq courseReq) {
+        course.setTitle(courseReq.getTitle().trim());
+        course.setSubtitle(courseReq.getSubtitle().trim());
+        User instructor = userRepo.findById(courseReq.getInstructorId()).orElse(null);
         course.setInstructor(instructor);
-        course.setDescription(addCourseInfoDto.getDescription().trim());
-        Level level = Level.valueOf(addCourseInfoDto.getLevel().trim());
+        course.setDescription(courseReq.getDescription().trim());
+        Level level = Level.valueOf(courseReq.getLevel().trim());
         course.setLevel(level);
-        course.setLanguage(addCourseInfoDto.getLanguage().trim());
-        course.setCaption(addCourseInfoDto.getCaption());
-        course.setPrice(addCourseInfoDto.getPrice());
-        Category category = categoryService.getCategoryByName(addCourseInfoDto.getCategory().trim());
+        course.setLanguage(courseReq.getLanguage().trim());
+        course.setPrice(courseReq.getPrice());
+        Category category = categoryService.getCategoryByName(courseReq.getCategory().trim());
         course.setCategory(category);
-        Topic topic = categoryService.getTopicByName(addCourseInfoDto.getTopic().trim());
+        Topic topic = categoryService.getTopicByName(courseReq.getTopic().trim());
         course.setTopic(topic);
         course.setImage("");
         return course;
