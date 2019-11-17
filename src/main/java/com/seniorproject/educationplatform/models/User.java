@@ -1,6 +1,7 @@
 package com.seniorproject.educationplatform.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -31,7 +32,6 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private List<Role> roles = new ArrayList<>();
-//    private int userType;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -39,7 +39,7 @@ public class User {
     private boolean enabled = false;
 
     // Student Relationships
-    @JsonIgnore
+    @JsonIgnoreProperties("student")
     @OneToOne(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart;
 

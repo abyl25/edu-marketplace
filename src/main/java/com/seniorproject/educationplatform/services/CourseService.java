@@ -135,8 +135,8 @@ public class CourseService {
         return ResponseEntity.ok("Course target added");
     }
 
-    public Long removeCourseReq(Long courseId, String name) {
-        return courseRequirementRepo.removeByCourseIdAndName(courseId, name);
+    public void removeCourseReq(Long courseId, String name) {
+        courseRequirementRepo.removeByCourseIdAndName(courseId, name);
     }
 
     public void removeCourseGoal(Long courseId, String name) {

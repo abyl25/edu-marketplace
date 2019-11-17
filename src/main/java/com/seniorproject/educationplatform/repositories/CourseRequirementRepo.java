@@ -11,5 +11,5 @@ public interface CourseRequirementRepo extends JpaRepository<CourseRequirement, 
 
     boolean existsByCourseIdAndName(Long courseId, String requirementName);
 
-    Long removeByCourseIdAndName(Long courseId, String name);
+    void removeByCourseIdAndName(Long courseId, String name);
 }

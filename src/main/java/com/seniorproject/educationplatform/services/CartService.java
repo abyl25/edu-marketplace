@@ -8,10 +8,12 @@ import com.seniorproject.educationplatform.repositories.CartRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class CartService {
     private CourseService courseService;
     private CartRepo cartRepo;
@@ -32,26 +34,26 @@ public class CartService {
         return cartRepo.findById(id).orElse(null);
     }
 
-    public ResponseEntity addCourseToCart(Cart cart, Long courseId) {
+    public ResponseEntity addCourseToCart(Long userId, Long courseId) {
+        Cart cart = getCartById(userId);
         Course courseToAdd = courseService.getCourseById(courseId).get();
-        List<CartItem> cartItems = cart.getCartItem();
+        List<CartItem> cartItems = cart.getCartItems();
         for (CartItem cartItem : cartItems) {
             if (cartItem.getCourse().getId().equals(courseToAdd.getId())) {
                 return ResponseEntity.unprocessableEntity().body(courseToAdd.getTitle() + " already added");
             }
         }
-
         CartItem newCartItem = new CartItem();
         newCartItem.setCourse(courseToAdd);
         newCartItem.setCart(cart);
         cartItems.add(newCartItem);
-        cartItemRepo.save(newCartItem);
-        return ResponseEntity.ok("Added " + courseToAdd.getTitle() + " to cart");
+        newCartItem = cartItemRepo.save(newCartItem);
+        return ResponseEntity.ok(newCartItem);
     }
 
-    public ResponseEntity removeCourseFromCart(Long courseId) {
-        cartItemRepo.deleteById(courseId);
-        return ResponseEntity.ok("Course removed");
+    public ResponseEntity removeCourseFromCart(Long userId, Long courseId) {
+        Long count = cartItemRepo.removeByCartIdAndCourseId(userId, courseId);
+        return ResponseEntity.ok("Course removed, count: " + count);
     }
 
 }

@@ -18,7 +18,7 @@ public class Cart {
     @MapsId
     private User student;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
-    private List<CartItem> cartItem = new ArrayList<>();
+    @OneToMany(mappedBy = "cart", fetch=FetchType.EAGER)
+    private List<CartItem> cartItems = new ArrayList<>();
 
 }
