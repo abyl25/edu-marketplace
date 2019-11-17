@@ -35,8 +35,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedHeaders("Authorization", "Origin", "Content-Type", "Accept", "Accept-Language", "Cache-Control")
-            .allowedOrigins("*")
+            .allowedHeaders("Authorization", "Origin", "Content-Type", "Accept", "Accept-Language", "Cache-Control",
+                "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Access-Control-Request-Method", "Access-Control-Request-Headers")
+            .allowedOrigins("https://edu-mp.herokuapp.com")
             .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS");
     }
 
