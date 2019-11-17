@@ -35,6 +35,11 @@ class HelloController {
         return "Hello there!";
     }
 
+    @GetMapping("/api")
+    public String api() {
+        return "API works!";
+    }
+
     @PostMapping("/")
     public ResponseEntity postMain() {
         HttpHeaders responseHeaders = new HttpHeaders();
