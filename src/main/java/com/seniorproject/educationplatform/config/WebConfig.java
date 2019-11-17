@@ -32,13 +32,13 @@ public class WebConfig implements WebMvcConfigurer {
         return messageConverter;
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-            .allowedHeaders("Authorization", "Origin", "Content-Type", "Accept", "Accept-Language", "Cache-Control",
-                "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Access-Control-Request-Method", "Access-Control-Request-Headers")
-            .allowedOrigins("*")
-            .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS");
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//            .allowedHeaders("Authorization", "Origin", "Content-Type", "Accept", "Accept-Language", "Cache-Control",
+//                "Access-Control-Allow-Origin", "Access-Control-Allow-Headers", "Access-Control-Request-Method", "Access-Control-Request-Headers")
+//            .allowedOrigins("*")
+//            .allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH", "OPTIONS");
+//    }
 
 }
