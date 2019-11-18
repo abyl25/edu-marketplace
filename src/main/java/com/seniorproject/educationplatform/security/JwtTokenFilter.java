@@ -35,11 +35,20 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             SecurityContextHolder.clearContext();
             httpServletResponse.resetBuffer();
             httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
             httpServletResponse.setHeader("Content-Type", "application/json");
             httpServletResponse.getOutputStream().print("{\"errorMessage\":\"You are logged out!\"}");
             httpServletResponse.flushBuffer();
             return;
         }
+
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, HEAD, OPTIONS");
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Key, Authorization");
+        httpServletResponse.setHeader("Access-Control-Max-Age", "3600");
+        System.out.println("LOG: JwtTokenFilter, setting response headers");
+
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 

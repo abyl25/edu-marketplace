@@ -1,6 +1,8 @@
 package com.seniorproject.educationplatform.config;
 
+import com.seniorproject.educationplatform.filters.AddResponseHeaderFilter;
 import com.seniorproject.educationplatform.security.JwtConfigurer;
+import com.seniorproject.educationplatform.security.JwtTokenFilter;
 import com.seniorproject.educationplatform.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -27,14 +29,17 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
+    private AddResponseHeaderFilter responseHeaderFilter;
 
     private static final String ADMIN_ENDPOINT = "/api/admin/**";
     private static final String AUTH = "/api/auth";
 
     @Autowired
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider, @Qualifier("jwtUserDetailsService") UserDetailsService userDetailsService) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, @Qualifier("jwtUserDetailsService") UserDetailsService userDetailsService,
+            AddResponseHeaderFilter responseHeaderFilter) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
+        this.responseHeaderFilter = responseHeaderFilter;
     }
 
     @Bean
@@ -53,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers("/").permitAll()
-            .antMatchers(HttpMethod.GET, "/api").permitAll()
+            .antMatchers("/rest").permitAll()
             .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()
             .antMatchers("/api/users/**").hasAuthority("Admin")
             .antMatchers(HttpMethod.POST, AUTH + "/login", AUTH + "/signup").permitAll()
@@ -76,6 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(ADMIN_ENDPOINT).hasRole("Admin")
             .anyRequest().authenticated()
             .and()
+//            .addFilterBefore(new CorsFilter(), JwtTokenFilter.class)
             .apply(new JwtConfigurer(jwtTokenProvider));
     }
 

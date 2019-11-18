@@ -35,9 +35,9 @@ class HelloController {
         return "Hello there!";
     }
 
-    @GetMapping("/api")
-    public String api() {
-        return "API works!";
+    @GetMapping("/rest")
+    public ResponseEntity checkRestApi() {
+        return ResponseEntity.ok("REST API works!");
     }
 
     @PostMapping("/")
