@@ -59,6 +59,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/").permitAll()
             .antMatchers("/rest").permitAll()
+
+            // Auth, User and Role routes
             .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()
             .antMatchers("/api/users/**").hasAuthority("Admin")
             .antMatchers(HttpMethod.POST, AUTH + "/login", AUTH + "/signup").permitAll()
@@ -66,22 +68,34 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.POST, AUTH + "/forgotPassword").permitAll()
             .antMatchers(HttpMethod.GET, AUTH + "/validatePasswordResetToken").permitAll()
             .antMatchers(HttpMethod.POST, AUTH + "/updatePassword").hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
+            .antMatchers("/api/roles/**").permitAll()
+            .antMatchers("/api/role/**").permitAll()
 
+            // Course routes
 //            .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
             .antMatchers(HttpMethod.POST, "/api/courses/**").hasAuthority("Instructor")
             .antMatchers("/api/courses/**").permitAll()
 //            .antMatchers(HttpMethod.POST,"/api/courses/target").hasAuthority("Instructor")
             .antMatchers("/api/courses/target").permitAll()
 
+            // Cart routes
             .antMatchers(HttpMethod.GET,"/api/instructor/*/courses/*").permitAll()
             .antMatchers("/api/user/*/cart/**").permitAll()
             .antMatchers("/api/cart/**").permitAll()
             .antMatchers("/api/payment/**").permitAll()
 
+            // Category and Topic routes
+            .antMatchers("/api/category/**").permitAll()
+            .antMatchers("/api/categories/**").permitAll()
+            .antMatchers("/api/subcategories/**").permitAll()
+            .antMatchers("/api/topics/**").permitAll()
+            .antMatchers("/api/topic/**").permitAll()
+
+            // Admin routes
             .antMatchers(ADMIN_ENDPOINT).hasRole("Admin")
+
             .anyRequest().authenticated()
             .and()
-//            .addFilterBefore(new CorsFilter(), JwtTokenFilter.class)
             .apply(new JwtConfigurer(jwtTokenProvider));
     }
 

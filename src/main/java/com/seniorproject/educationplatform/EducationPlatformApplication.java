@@ -27,24 +27,23 @@ public class EducationPlatformApplication  {
 
 }
 
+// Controller For Testing
 @RestController
 class HelloController {
 
     @GetMapping("/")
-    public String hello() {
-        return "Hello there!";
+    public ResponseEntity hello() {
+        return ResponseEntity.ok("Hello there!");
+    }
+
+    @PostMapping("/")
+    public ResponseEntity postMain() {
+        return ResponseEntity.ok("Response with header using ResponseEntity");
     }
 
     @GetMapping("/rest")
     public ResponseEntity checkRestApi() {
         return ResponseEntity.ok("REST API works!");
-    }
-
-    @PostMapping("/")
-    public ResponseEntity postMain() {
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Access-Control-Allow-Origin", "*");
-        return ResponseEntity.ok().headers(responseHeaders).body("Response with header using ResponseEntity");
     }
 
 }
