@@ -57,7 +57,7 @@ public class UserController {
         return ResponseEntity.ok(role);
     }
 
-    @PostMapping("/roles/{roleName}")
+    @PostMapping("/role/{roleName}")
     public ResponseEntity addRole(@PathVariable String roleName) {
         Role role = new Role(roleName);
         roleRepo.save(role);
@@ -71,7 +71,7 @@ public class UserController {
         return ResponseEntity.ok("Roles added");
     }
 
-    @DeleteMapping("/roles/{roleName}")
+    @DeleteMapping("/role/{roleName}")
     public ResponseEntity deleteRole(@PathVariable String roleName) {
         roleRepo.removeByName(roleName);
         return ResponseEntity.ok("Role deleted");
