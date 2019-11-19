@@ -7,5 +7,5 @@ public class CourseOrderReqDto {
     private Long studentId;
     private Long courseId;
     private long price;
-    private String paymentType;
+//    private String paymentType;
 }

@@ -3,6 +3,7 @@ package com.seniorproject.educationplatform.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,23 +29,25 @@ public class User {
 
     private String imageName;
 
-//    @JsonIgnoreProperties("users")
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
-    private List<Role> roles = new ArrayList<>();
+    private boolean enabled = false;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    private boolean enabled = false;
+//    @JsonIgnoreProperties("users")
+    @ToString.Exclude
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinTable(name = "user_roles", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+    private List<Role> roles = new ArrayList<>();
 
     // Student Relationships
+    @ToString.Exclude
     @JsonIgnoreProperties("student")
     @OneToOne(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart;
 
 //    @JsonIgnoreProperties("student")
-//    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY) //  cascade = CascadeType.ALL
 //    private List<CourseOrder> courseOrders = new ArrayList<>();
 
 //    @JsonIgnoreProperties("student")

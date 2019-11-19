@@ -45,7 +45,7 @@ public class Course {
 
 //    private boolean featuredCourse;
 
-    @JsonIgnoreProperties({"password", "roles", "status", "enabled"})
+    @JsonIgnoreProperties({"password", "roles", "cart", "status", "enabled"})
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "instructor_id")
     private User instructor;

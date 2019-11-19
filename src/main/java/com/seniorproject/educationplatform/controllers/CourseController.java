@@ -3,6 +3,7 @@ package com.seniorproject.educationplatform.controllers;
 import com.seniorproject.educationplatform.ESModels.ESCourse;
 import com.seniorproject.educationplatform.dto.course.*;
 import com.seniorproject.educationplatform.models.Course;
+import com.seniorproject.educationplatform.services.CourseOrderService;
 import com.seniorproject.educationplatform.services.CourseService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,13 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 public class CourseController {
-    private final CourseService courseService;
+    private CourseService courseService;
+    private CourseOrderService courseOrderService;
 
     @Autowired
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, CourseOrderService courseOrderService) {
         this.courseService = courseService;
+        this.courseOrderService = courseOrderService;
     }
 
     @GetMapping("/courses")

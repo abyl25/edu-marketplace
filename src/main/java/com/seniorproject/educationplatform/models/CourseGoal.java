@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,6 +22,7 @@ public class CourseGoal {
     private Long id;
 
 //    @JsonIgnoreProperties("courseGoals")
+    @ToString.Exclude
     @JsonIgnore
     @ManyToOne
     @JoinColumn

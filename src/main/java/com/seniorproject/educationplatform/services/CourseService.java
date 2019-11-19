@@ -43,8 +43,8 @@ public class CourseService {
 
     @Autowired
     public CourseService(CourseOrderService courseOrderService, CategoryService categoryService, CourseRepo courseRepo, CourseRequirementRepo courseRequirementRepo,
-                         CourseGoalRepo courseGoalRepo, CourseSearchRepo courseSearchRepo, UserService userService, UserRepo userRepo,
-                         ElasticsearchOperations elasticsearchOperations) {
+             CourseGoalRepo courseGoalRepo, CourseSearchRepo courseSearchRepo, UserService userService, UserRepo userRepo,
+             ElasticsearchOperations elasticsearchOperations) {
         this.courseOrderService = courseOrderService;
         this.categoryService = categoryService;
         this.courseRepo = courseRepo;

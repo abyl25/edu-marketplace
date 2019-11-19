@@ -11,4 +11,6 @@ public interface CourseOrderRepo extends JpaRepository<CourseOrder, Long> {
     List<CourseOrder> findByStudentId(Long studentId);
 
     boolean existsByStudentIdAndCourseId(Long studentId, Long courseId);
+
+    Long removeByStudentIdAndCourseId(Long studentId, Long courseId);
 }

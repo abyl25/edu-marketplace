@@ -1,6 +1,8 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,12 +11,13 @@ import java.util.List;
 @Data
 @Entity
 public class Cart {
-    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id    // @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+//  @JoinColumn(name = "userId")
+    @ToString.Exclude
+    @JsonIgnoreProperties("cart")
     @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "userId")
     @MapsId
     private User student;
 
