@@ -56,8 +56,21 @@ public class CourseService {
         this.elasticsearchOperations = elasticsearchOperations;
     }
 
-    public List<Course> getCourses() {
-        return courseRepo.findAll();
+    public ResponseEntity getCourses(String status) {
+        List<Course> courses;
+        if (status == null) {
+            courses = courseRepo.findAll();
+        } else {
+            CourseStatus courseStatus;
+            try {
+                courseStatus = CourseStatus.valueOf(status);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                return new ResponseEntity<>("Course status: " + status + " does not exist", HttpStatus.NOT_FOUND);
+            }
+            courses = getCourseByStatus(courseStatus);
+        }
+        return ResponseEntity.ok(courses);
     }
 
     public Optional<Course> getCourseById(Long courseId) {
@@ -160,6 +173,10 @@ public class CourseService {
         return elasticsearchOperations.queryForList(searchQuery, ESCourse.class);
     }
 
+    public List<Course> getCourseByStatus(CourseStatus courseStatus) {
+        return courseRepo.findByStatus(courseStatus);
+    }
+
     public boolean courseTitleExists(String title) {
         return courseRepo.existsByTitleIgnoreCase(title.trim());
     }
@@ -231,6 +248,20 @@ public class CourseService {
         return courseOrders.stream().map(CourseOrder::getStudent).collect(Collectors.toList());
     }
 
+    public ResponseEntity updateCourseStatus(Long courseId, String status) {
+        Course course = getCourseById(courseId).get();
+        CourseStatus courseStatus;
+        try {
+            courseStatus = CourseStatus.valueOf(status);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>("Course status: " + status + " does not exist", HttpStatus.NOT_FOUND);
+        }
+        course.setStatus(courseStatus);
+        courseRepo.save(course);
+        return ResponseEntity.ok("Course status updated");
+    }
+
     private String createPermaLink(String name) {
         return name.toLowerCase()
                 .replaceAll("[_!@#$%^&*()-=+:.,|]", " ")
@@ -238,6 +269,8 @@ public class CourseService {
                 .replace(" ", "-");
     }
 
+
+    /*  */
     public List<Course> getPopularCourses() {
         return null;
     }
@@ -279,7 +312,8 @@ public class CourseService {
         course.setCategory(category);
         Topic topic = categoryService.getTopicByName(courseReq.getTopic().trim());
         course.setTopic(topic);
-        course.setImage("");
+        course.setImage_name("");
+        course.setStatus(CourseStatus.DRAFT);
         return course;
     }
 

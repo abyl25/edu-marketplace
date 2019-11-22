@@ -29,17 +29,14 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
-    private AddResponseHeaderFilter responseHeaderFilter;
 
     private static final String ADMIN_ENDPOINT = "/api/admin/**";
     private static final String AUTH = "/api/auth";
 
     @Autowired
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider, @Qualifier("jwtUserDetailsService") UserDetailsService userDetailsService,
-            AddResponseHeaderFilter responseHeaderFilter) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider, @Qualifier("jwtUserDetailsService") UserDetailsService userDetailsService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userDetailsService = userDetailsService;
-        this.responseHeaderFilter = responseHeaderFilter;
     }
 
     @Bean
@@ -74,13 +71,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // Course routes
             .antMatchers(HttpMethod.GET, "/api/user/*/courses/**").permitAll()
 //            .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/courses/register").permitAll()
             .antMatchers(HttpMethod.POST, "/api/courses/**").hasAuthority("Instructor")
+
             .antMatchers("/api/courses/**").permitAll()
 //            .antMatchers(HttpMethod.POST,"/api/courses/target").hasAuthority("Instructor")
             .antMatchers("/api/courses/target").permitAll()
+            .antMatchers(HttpMethod.GET,"/api/instructor/*/courses/*/students").permitAll()
+            .antMatchers(HttpMethod.GET,"/api/instructor/*/courses/*/students_jpql").permitAll()
+            .antMatchers(HttpMethod.GET,"/api/instructor/*/courses/*").permitAll()
 
             // Cart routes
-            .antMatchers(HttpMethod.GET,"/api/instructor/*/courses/*").permitAll()
             .antMatchers("/api/user/*/cart/**").permitAll()
             .antMatchers("/api/cart/**").permitAll()
             .antMatchers("/api/payment/**").permitAll()
@@ -92,7 +93,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/topics/**").permitAll()
             .antMatchers("/api/topic/**").permitAll()
 
-            // Admin routes
+            // Files
+            .antMatchers("/api/files/**").permitAll()
+
+
+                // Admin routes
             .antMatchers(ADMIN_ENDPOINT).hasRole("Admin")
 
             .anyRequest().authenticated()

@@ -1,6 +1,7 @@
 package com.seniorproject.educationplatform.repositories;
 
 import com.seniorproject.educationplatform.models.Course;
+import com.seniorproject.educationplatform.models.CourseStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +16,8 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
     boolean existsByPermaLink(String permaLink);
 
     Course findByPermaLink(String permaLink);
+
+    List<Course> findByStatus(CourseStatus status);
 
     List<Course> findByCategoryNameIgnoreCase(String categoryName);
 

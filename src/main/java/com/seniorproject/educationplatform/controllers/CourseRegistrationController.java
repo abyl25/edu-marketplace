@@ -1,6 +1,7 @@
 package com.seniorproject.educationplatform.controllers;
 
 import com.seniorproject.educationplatform.dto.course.CourseOrderReqDto;
+import com.seniorproject.educationplatform.dto.course.InstructorCourseStudents;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.services.CourseOrderService;
 import com.seniorproject.educationplatform.services.CourseService;
@@ -41,5 +42,16 @@ public class CourseRegistrationController {
         courseOrderService.dropFromCourse(userId, courseId);
         return ResponseEntity.ok("Dropped from course!");
     }
+
+    @GetMapping("/instructor/{instructorId}/courses/{courseId}/students")
+    public ResponseEntity getInstructorStudents(@PathVariable Long instructorId, @PathVariable Long courseId) {
+        return courseOrderService.getInstructorStudentsByCourseId(instructorId, courseId);
+    }
+
+//    @GetMapping("/instructor/{instructorId}/courses/{courseId}/students_jpql")
+//    public ResponseEntity getInstructorStudentsJpql(@PathVariable Long instructorId, @PathVariable Long courseId) {
+//        List students = courseOrderService.getInstructorStudentsJpql(courseId);
+//        return ResponseEntity.ok(students);
+//    }
 
 }

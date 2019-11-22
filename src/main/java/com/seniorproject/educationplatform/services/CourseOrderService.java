@@ -1,12 +1,14 @@
 package com.seniorproject.educationplatform.services;
 
 import com.seniorproject.educationplatform.dto.course.CourseOrderReqDto;
+import com.seniorproject.educationplatform.dto.course.InstructorCourseStudents;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.models.CourseOrder;
 import com.seniorproject.educationplatform.models.CourseOrderKey;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.repositories.CourseOrderRepo;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
+import com.seniorproject.educationplatform.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,12 +22,14 @@ public class CourseOrderService {
     private CourseOrderRepo courseOrderRepo;
     private CourseRepo courseRepo;
     private UserService userService;
+    private UserRepo userRepo;
 
     @Autowired
-    public CourseOrderService(CourseOrderRepo courseOrderRepo, CourseRepo courseRepo, UserService userService) {
+    public CourseOrderService(CourseOrderRepo courseOrderRepo, CourseRepo courseRepo, UserService userService, UserRepo userRepo) {
         this.courseOrderRepo = courseOrderRepo;
         this.courseRepo = courseRepo;
         this.userService = userService;
+        this.userRepo = userRepo;
     }
 
     public List<Course> getRegisteredCourses(Long userId) {
@@ -67,6 +71,20 @@ public class CourseOrderService {
     public boolean checkIfStudentPurchasedCourse(Long studentId, Long courseId) {
         return courseOrderRepo.existsByStudentIdAndCourseId(studentId, courseId);
     }
+
+    public ResponseEntity getInstructorStudentsByCourseId(Long instructorId, Long courseId) {
+        Course course = courseRepo.findByIdAndInstructorId(courseId, instructorId);
+        if (course == null) {
+            return ResponseEntity.unprocessableEntity().body("Instructor does not own this course");
+        }
+        List<InstructorCourseStudents> instructorCourseStudents = userRepo.getInstructorStudents(courseId);
+        System.out.println("LOG: instructorCourseStudents: " + instructorCourseStudents);
+        return ResponseEntity.ok(instructorCourseStudents);
+    }
+
+//    public List getInstructorStudentsJpql(Long courseId) {
+//        return userRepo.getInstructorStudentsJpql(courseId);
+//    }
 
     // Mappers
     private CourseOrder courseOrderDtoToEntity(CourseOrderReqDto courseOrderReqDto) {

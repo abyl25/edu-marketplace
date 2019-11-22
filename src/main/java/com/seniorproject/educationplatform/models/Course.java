@@ -39,9 +39,14 @@ public class Course {
 
     private Date lastUpdate;
 
-    private String image;
-
     private String permaLink;
+
+    @Enumerated(EnumType.STRING)
+    private CourseStatus status;
+
+    private String image_name;
+
+    private String image_format;
 
 //    private boolean featuredCourse;
 

@@ -12,6 +12,7 @@ import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.repositories.PasswordTokenRepo;
 import com.seniorproject.educationplatform.repositories.RoleRepo;
 import com.seniorproject.educationplatform.security.JwtTokenProvider;
+import com.seniorproject.educationplatform.security.JwtUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

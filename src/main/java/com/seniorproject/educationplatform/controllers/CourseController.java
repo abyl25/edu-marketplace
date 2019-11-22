@@ -28,10 +28,9 @@ public class CourseController {
     }
 
     @GetMapping("/courses")
-    public ResponseEntity getCourses() {
+    public ResponseEntity getCourses(@RequestParam(value="status", required=false) String status) {
 //        Pageable firstPage = PageRequest.of(0, 20); // Page<Course> // courseRepo.findAll(firstPage);
-        List<Course> courses = courseService.getCourses();
-        return ResponseEntity.ok(courses);
+        return courseService.getCourses(status);
     }
 
     @GetMapping("/courses/{courseId}")
@@ -99,6 +98,11 @@ public class CourseController {
         System.out.println("LOG: removeCourseGoal(): goal name: " + name);
         courseService.removeCourseGoal(id, name);
         return ResponseEntity.ok("Course goal deleted");
+    }
+
+    @PatchMapping("/courses/{courseId}/status/{status}")
+    public ResponseEntity updateCourseByStatus(@PathVariable Long courseId, @PathVariable String status) {
+        return courseService.updateCourseStatus(courseId, status);
     }
 
     @GetMapping("/courses/link/{permaLink}")
