@@ -165,11 +165,22 @@ public class AuthService {
         return ResponseEntity.ok("Password updated successfully! Log in again");
     }
 
-    public UserDetails getLoggedInUser() {
+    public JwtUser getLoggedInUser() {
+        System.out.println("LOG: AuthService, getLoggedInUser()");
         Authentication auth = getAuthentication();
         if (!(auth instanceof AnonymousAuthenticationToken)) {
-            return (UserDetails) auth.getPrincipal();
+            System.out.println("LOG: !AnonymousAuthenticationToken");
+            JwtUser jwtUser = (JwtUser) auth.getPrincipal();
+            System.out.println("LOG: jwtUser: " + jwtUser);
+            return (JwtUser) auth.getPrincipal(); //  (UserDetails)
         }
+//        Object principal = auth.getPrincipal();
+//        if (principal instanceof UserDetails) {
+//            System.out.println("LOG: principal instanceof UserDetails");
+//            System.out.println("LOG: principal: " + principal);
+//            String username = ((UserDetails) principal).getUsername();
+//        }
+        System.out.println("LOG: jwtUser is kind of null");
         return null;
     }
 

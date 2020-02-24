@@ -20,6 +20,7 @@ public class JwtUser implements UserDetails {
     private final boolean enabled;
 //    private final Date lastPasswordResetDate;
     private final Collection<? extends GrantedAuthority> authorities;
+    @JsonIgnore
     private final Cart cart;
 
 //    public JwtUser(User user) {
@@ -39,7 +40,7 @@ public class JwtUser implements UserDetails {
 //        this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
-    @JsonIgnore
+//    @JsonIgnore
     public Long getId() {
         return id;
     }

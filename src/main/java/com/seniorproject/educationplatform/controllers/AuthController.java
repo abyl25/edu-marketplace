@@ -39,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@Valid @RequestBody LoginRequestDto requestDto) {
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginRequestDto requestDto) {
         log.info("AuthController, login() ");
         String userName = requestDto.getUserName();
         String token = authService.login(requestDto);
@@ -51,7 +51,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity signUp(@Valid @RequestBody SignUpRequestDto requestDto) {
+    public ResponseEntity<Object> signUp(@Valid @RequestBody SignUpRequestDto requestDto) {
         log.info("AuthController, signup() ");
         System.out.println("req body: " + requestDto);
         String userName = requestDto.getUserName();
@@ -85,7 +85,7 @@ public class AuthController {
 
     @GetMapping("/user")
     public JwtUser getLoggedInUser(Authentication auth) {
-        return (JwtUser) authService.getLoggedInUser();
+        return authService.getLoggedInUser(); // (JwtUser)
     }
 
     @GetMapping("/me")

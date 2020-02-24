@@ -2,6 +2,7 @@ package com.seniorproject.educationplatform.services;
 
 import com.seniorproject.educationplatform.dto.course.CourseOrderReqDto;
 import com.seniorproject.educationplatform.dto.course.InstructorCourseStudents;
+import com.seniorproject.educationplatform.dto.course.MultiCourseOrderReqDto;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.models.CourseOrder;
 import com.seniorproject.educationplatform.models.CourseOrderKey;
@@ -13,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,30 +25,32 @@ public class CourseOrderService {
     private CourseRepo courseRepo;
     private UserService userService;
     private UserRepo userRepo;
+    private CartService cartService;
 
     @Autowired
-    public CourseOrderService(CourseOrderRepo courseOrderRepo, CourseRepo courseRepo, UserService userService, UserRepo userRepo) {
+    public CourseOrderService(CourseOrderRepo courseOrderRepo, CourseRepo courseRepo, UserService userService, UserRepo userRepo, CartService cartService) {
         this.courseOrderRepo = courseOrderRepo;
         this.courseRepo = courseRepo;
         this.userService = userService;
         this.userRepo = userRepo;
+        this.cartService = cartService;
     }
 
     public List<Course> getRegisteredCourses(Long userId) {
-        List<CourseOrder> courseOrders = getOrdersByStudentId(userId);
+        List<CourseOrder> courseOrders = this.getOrdersByStudentId(userId);
         return courseOrders.stream().map(CourseOrder::getCourse).collect(Collectors.toList());
     }
 
-    public ResponseEntity getRegisteredCourse(Long userId, Long courseId) {
-        boolean purchased = checkIfStudentPurchasedCourse(userId, courseId);
+    public ResponseEntity<Object> getRegisteredCourse(Long userId, Long courseId) {
+        boolean purchased = this.checkIfStudentPurchasedCourse(userId, courseId);
         if (!purchased) {
-            return ResponseEntity.unprocessableEntity().body("Student already purchased this course");
+            return ResponseEntity.unprocessableEntity().body("Student haven't purchased this course");
         }
         Course course = courseRepo.findById(courseId).get();
         return ResponseEntity.ok(course);
     }
 
-    public ResponseEntity purchaseCourse(CourseOrderReqDto courseOrderReqDto) {
+    public ResponseEntity<Object> purchaseCourse(CourseOrderReqDto courseOrderReqDto) {
         boolean alreadyPurchased = checkIfStudentPurchasedCourse(courseOrderReqDto.getStudentId(), courseOrderReqDto.getCourseId());
         if (alreadyPurchased) {
             return ResponseEntity.unprocessableEntity().body("Student already purchased this course");
@@ -54,6 +58,25 @@ public class CourseOrderService {
         CourseOrder courseOrder = courseOrderDtoToEntity(courseOrderReqDto);
         courseOrderRepo.save(courseOrder);
         return ResponseEntity.ok("Course registered!");
+    }
+
+    public ResponseEntity<Object> registerToMultipleCourses(MultiCourseOrderReqDto courseOrdersReq) {
+        List<Long> courseIds = courseOrdersReq.getCourseIds();
+        List<CourseOrder> courseOrders = new ArrayList<>();
+        courseIds.forEach(cId -> {
+            CourseOrder courseOrder = new CourseOrder();
+            Course course = courseRepo.findById(cId).get();
+            User student = userRepo.findById(courseOrdersReq.getUserId()).get();
+            courseOrder.setId(new CourseOrderKey(student.getId(), course.getId()));
+            courseOrder.setStudent(student);
+            courseOrder.setCourse(course);
+            courseOrder.setPrice(course.getPrice());
+            courseOrder.setOrderDate(new Date(System.currentTimeMillis()));
+            courseOrders.add(courseOrder);
+        });
+        courseOrderRepo.saveAll(courseOrders);
+        cartService.emptyCart(courseOrdersReq.getUserId());
+        return ResponseEntity.ok("Courses registered!");
     }
 
     public void dropFromCourse(Long userId, Long courseId) {
@@ -72,7 +95,7 @@ public class CourseOrderService {
         return courseOrderRepo.existsByStudentIdAndCourseId(studentId, courseId);
     }
 
-    public ResponseEntity getInstructorStudentsByCourseId(Long instructorId, Long courseId) {
+    public ResponseEntity<Object> getInstructorStudentsByCourseId(Long instructorId, Long courseId) {
         Course course = courseRepo.findByIdAndInstructorId(courseId, instructorId);
         if (course == null) {
             return ResponseEntity.unprocessableEntity().body("Instructor does not own this course");
@@ -80,6 +103,10 @@ public class CourseOrderService {
         List<InstructorCourseStudents> instructorCourseStudents = userRepo.getInstructorStudents(courseId);
         System.out.println("LOG: instructorCourseStudents: " + instructorCourseStudents);
         return ResponseEntity.ok(instructorCourseStudents);
+    }
+
+    public int getInstructorAllStudentsCount(Long instructorId) {
+        return userRepo.getInstructorStudentsCount(instructorId);
     }
 
 //    public List getInstructorStudentsJpql(Long courseId) {
@@ -95,7 +122,7 @@ public class CourseOrderService {
         Course course = courseRepo.findById(courseOrderReqDto.getCourseId()).get();
         courseOrder.setCourse(course);
         courseOrder.setPrice(courseOrderReqDto.getPrice());
-        courseOrder.setOrderDate(new Date());
+        courseOrder.setOrderDate(new Date(System.currentTimeMillis()));
         // courseOrder.setPaymentType();
         return courseOrder;
     }

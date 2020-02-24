@@ -2,6 +2,7 @@ package com.seniorproject.educationplatform.repositories;
 
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.models.CourseStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,7 +26,9 @@ public interface CourseRepo extends JpaRepository<Course, Long> {
 
     List<Course> findByTopicNameIgnoreCase(String topicName);
 
-    List<Course> findByInstructorId(Long id);
+    List<Course> findByInstructorId(Long id, Pageable pageable);
+
+    int countByInstructorId(Long id);
 
     Course findByIdAndInstructorId(Long id, Long instructor_id);
 

@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.ToString;
@@ -16,7 +17,8 @@ public class Cart {
 
 //  @JoinColumn(name = "userId")
     @ToString.Exclude
-    @JsonIgnoreProperties("cart")
+    @JsonIgnore
+//    @JsonIgnoreProperties("cart")
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private User student;

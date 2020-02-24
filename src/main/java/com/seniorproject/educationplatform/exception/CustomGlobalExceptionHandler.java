@@ -59,6 +59,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return ResponseEntity.status(422).body(ex.getMessage());
     }
 
+    @ExceptionHandler(CustomException.class) // NotInstructorCourseException
+    protected ResponseEntity<Object> CustomException(Exception ex, WebRequest request) {
+        log.info("LOG: CustomException: " + ex.getMessage());
+        return ResponseEntity.status(422).body(ex.getMessage());
+    }
+
 //    @ExceptionHandler(JwtAuthenticationException.class)
 //    protected ResponseEntity<Object> handleJwtExpiredException(Exception ex, WebRequest request) {
 //        log.info("LOG: auth: JWT token is expired or invalid");

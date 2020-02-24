@@ -22,7 +22,7 @@ public class CourseLecture {
 
     @ManyToOne
     @JoinColumn
-    private CourseSection courseSection; // FK
+    private CourseSection courseSection;
 
     private String name;
 
@@ -37,5 +37,12 @@ public class CourseLecture {
 
 //    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.EAGER)
 //    private Set<LectureQA> lectureQAs = new HashSet<>();
+
+    public CourseLecture() {}
+
+    public CourseLecture(String name, CourseSection courseSection) {
+        this.name = name;
+        this.courseSection = courseSection;
+    }
 
 }

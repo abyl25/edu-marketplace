@@ -71,15 +71,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // Course routes
             .antMatchers(HttpMethod.GET, "/api/user/*/courses/**").permitAll()
 //            .antMatchers(HttpMethod.GET,"/api/courses/**").permitAll()
-            .antMatchers(HttpMethod.POST, "/api/courses/register").permitAll()
-            .antMatchers(HttpMethod.POST, "/api/courses/**").hasAuthority("Instructor")
-
+            .antMatchers(HttpMethod.POST, "/api/courses/register").permitAll() // "Student"
+            .antMatchers(HttpMethod.POST,"/api/courses/multi-register").permitAll()  // "Student"
+            .antMatchers(HttpMethod.POST, "/api/courses/**").permitAll() // .hasAuthority("Instructor")
             .antMatchers("/api/courses/**").permitAll()
+
 //            .antMatchers(HttpMethod.POST,"/api/courses/target").hasAuthority("Instructor")
             .antMatchers("/api/courses/target").permitAll()
+            .antMatchers("/api/courses/*/section/*/lecture/*").permitAll()
+            .antMatchers("/api/courses/*/section/*/lecture").permitAll()
+            .antMatchers("/api/courses/*/section/*").permitAll()
+            .antMatchers("/api/courses/*/section").permitAll()
+
             .antMatchers(HttpMethod.GET,"/api/instructor/*/courses/*/students").permitAll()
             .antMatchers(HttpMethod.GET,"/api/instructor/*/courses/*/students_jpql").permitAll()
-            .antMatchers(HttpMethod.GET,"/api/instructor/*/courses/*").permitAll()
+            .antMatchers(HttpMethod.GET,"/api/instructor/*/courses/**").permitAll()
+            .antMatchers(HttpMethod.GET,"/api/instructor/*/courses").permitAll()
 
             // Cart routes
             .antMatchers("/api/user/*/cart/**").permitAll()
@@ -97,7 +104,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/files/**").permitAll()
 
 
-                // Admin routes
+            // Admin routes
             .antMatchers(ADMIN_ENDPOINT).hasRole("Admin")
 
             .anyRequest().authenticated()

@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -26,12 +27,24 @@ public class CourseSection {
 
     @ManyToOne
     @JoinColumn
-    private Course course; // FK
+    private Course course;
 
-//    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
-//    private List<CourseLecture> courseLectures = new ArrayList<>();
+    @JsonIgnoreProperties("courseSection")
+    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
+    private List<CourseLecture> courseLectures = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
 //    private List<CourseArticle> courseArticles = new ArrayList<>();
+
+    public CourseSection() {}
+
+    public CourseSection(String name) {
+        this.name = name;
+    }
+
+    public CourseSection(String name, Course course) {
+        this.name = name;
+        this.course = course;
+    }
 
 }
