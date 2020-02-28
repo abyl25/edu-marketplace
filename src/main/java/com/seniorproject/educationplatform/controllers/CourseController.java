@@ -159,8 +159,7 @@ public class CourseController {
         return ResponseEntity.ok("Course lecture deleted");
     }
 
-
-
+    
     @PatchMapping("/courses/{courseId:[0-9]+}/status/{status}")
     public ResponseEntity<Object> updateCourseByStatus(@PathVariable Long courseId, @PathVariable String status) {
         return courseService.updateCourseStatus(courseId, status);
