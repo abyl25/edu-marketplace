@@ -8,7 +8,8 @@ import javax.persistence.*;
 @Data
 public class CourseResource {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="RESOURCE_SEQ")
+    @SequenceGenerator(name="RESOURCE_SEQ", sequenceName = "RESOURCE_SEQ", allocationSize = 1)
     private Long id;
 
     @ManyToOne
