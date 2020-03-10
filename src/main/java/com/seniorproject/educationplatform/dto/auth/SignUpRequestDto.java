@@ -4,10 +4,7 @@ import com.seniorproject.educationplatform.validators.MySequence;
 import lombok.Data;
 
 import javax.validation.GroupSequence;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Data
 @GroupSequence({SignUpRequestDto.class, MySequence.class})
@@ -35,5 +32,6 @@ public class SignUpRequestDto {
     @Size(min = 5, message = "Minimum password length: 5 characters", groups = MySequence.First.class)
     private String password;
 
+    @NotNull(message = "Choose role")
     private int userType; // admin = 1,  instructor = 2, student = 3
 }

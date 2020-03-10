@@ -65,6 +65,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return ResponseEntity.status(422).body(ex.getMessage());
     }
 
+    @ExceptionHandler(MyFileNotFoundException.class)
+    protected ResponseEntity<Object> MyFileNotFoundException(Exception ex, WebRequest request) {
+        log.info("LOG: MyFileNotFoundException: " + ex.getMessage());
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
 //    @ExceptionHandler(JwtAuthenticationException.class)
 //    protected ResponseEntity<Object> handleJwtExpiredException(Exception ex, WebRequest request) {
 //        log.info("LOG: auth: JWT token is expired or invalid");

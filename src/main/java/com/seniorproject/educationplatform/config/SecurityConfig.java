@@ -1,6 +1,5 @@
 package com.seniorproject.educationplatform.config;
 
-import com.seniorproject.educationplatform.filters.AddResponseHeaderFilter;
 import com.seniorproject.educationplatform.security.JwtConfigurer;
 import com.seniorproject.educationplatform.security.JwtTokenFilter;
 import com.seniorproject.educationplatform.security.JwtTokenProvider;
@@ -25,7 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserDetailsService userDetailsService;
@@ -56,6 +55,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/").permitAll()
             .antMatchers("/rest").permitAll()
+
+            // static files
+            .antMatchers("/api/static/**").permitAll()
+//            .antMatchers("/api/static/files").permitAll()
+//            .antMatchers("/api/static/download/**").permitAll()
+//            .antMatchers("/api/static/images/**").permitAll()
+
 
             // Auth, User and Role routes
             .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()

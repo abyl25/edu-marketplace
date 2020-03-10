@@ -48,6 +48,8 @@ public class Course {
 
     private String image_format;
 
+    private String image_path;
+
 //    private boolean featuredCourse;
 
     @JsonIgnoreProperties({"password", "roles", "cart", "status", "enabled"})
