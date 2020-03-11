@@ -43,7 +43,7 @@ public class FileController {
 
     /*
     *  @RequestParam String type
-    *  types: logo, avatar, file
+    *  types: logo, avatar, file, video
     * */
     @PostMapping("/files")
     public ResponseEntity<Object> uploadFile(@RequestPart(value = "file") MultipartFile file, @RequestParam String type, @RequestParam Long courseId) {

@@ -3,7 +3,10 @@ package com.seniorproject.educationplatform.services;
 import com.seniorproject.educationplatform.exception.CustomException;
 import com.seniorproject.educationplatform.exception.MyFileNotFoundException;
 import com.seniorproject.educationplatform.models.Course;
+import com.seniorproject.educationplatform.models.CourseLecture;
+import com.seniorproject.educationplatform.repositories.CourseLectureRepo;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
+import com.seniorproject.educationplatform.repositories.CourseSectionRepo;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +35,15 @@ public class FileService {
     private static final Logger logger = LoggerFactory.getLogger(FileService.class);
     private AuthService authService;
     private CourseRepo courseRepo;
+    private CourseSectionRepo courseSectionRepo;
+    private CourseLectureRepo courseLectureRepo;
     private Path fileStorageLocation;
 
-    public FileService(AuthService authService, CourseRepo courseRepo) {
+    public FileService(AuthService authService, CourseRepo courseRepo, CourseSectionRepo courseSectionRepo, CourseLectureRepo courseLectureRepo) {
         this.authService = authService; // FileStorageProperties fileStorageProperties
         this.courseRepo = courseRepo;
+        this.courseSectionRepo = courseSectionRepo;
+        this.courseLectureRepo = courseLectureRepo;
         this.fileStorageLocation = Paths.get("src/main/resources/static").toAbsolutePath().normalize();
         this.createDirectory(fileStorageLocation);
     }
@@ -59,10 +66,21 @@ public class FileService {
             Path targetLocation = path.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            course.setImage_name(fileName);
-            course.setImage_format(this.getFileExtension(fileName).get());
-            course.setImage_path(path.toString());
-            courseRepo.save(course);
+            if (type.equals("logo")) {
+                logger.info("type: logo");
+                course.setImage_name(fileName);
+                course.setImage_format(this.getFileExtension(fileName).get());
+                course.setImage_path(path.toString());
+                courseRepo.save(course);
+            } else if (type.equals("avatar")) {
+                logger.info("type: avatar");
+            } else if (type.equals("file")) {
+                logger.info("file");
+            } else if (type.equals("video")) {
+                logger.info("video");
+//                CourseSection courseSection =
+//                CourseLecture lecture = new CourseLecture();
+            }
 
             return fileName;
         } catch (IOException ex) {
