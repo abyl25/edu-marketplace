@@ -5,9 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -27,7 +25,7 @@ public class CourseSection {
     @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id asc")
     private List<CourseLecture> lectures = new ArrayList<>();
-    
+
 //    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)
 //    private List<CourseArticle> courseArticles = new ArrayList<>();
 

@@ -3,10 +3,11 @@ package com.seniorproject.educationplatform.services;
 import com.seniorproject.educationplatform.exception.CustomException;
 import com.seniorproject.educationplatform.exception.MyFileNotFoundException;
 import com.seniorproject.educationplatform.models.Course;
+import com.seniorproject.educationplatform.models.CourseFile;
 import com.seniorproject.educationplatform.models.CourseLecture;
+import com.seniorproject.educationplatform.repositories.CourseFileRepo;
 import com.seniorproject.educationplatform.repositories.CourseLectureRepo;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
-import com.seniorproject.educationplatform.repositories.CourseSectionRepo;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,20 +36,20 @@ public class FileService {
     private static final Logger logger = LoggerFactory.getLogger(FileService.class);
     private AuthService authService;
     private CourseRepo courseRepo;
-    private CourseSectionRepo courseSectionRepo;
     private CourseLectureRepo courseLectureRepo;
+    private CourseFileRepo courseFileRepo;
     private Path fileStorageLocation;
 
-    public FileService(AuthService authService, CourseRepo courseRepo, CourseSectionRepo courseSectionRepo, CourseLectureRepo courseLectureRepo) {
-        this.authService = authService; // FileStorageProperties fileStorageProperties
+    public FileService(AuthService authService, CourseRepo courseRepo, CourseLectureRepo courseLectureRepo, CourseFileRepo courseFileRepo) {
+        this.authService = authService;
         this.courseRepo = courseRepo;
-        this.courseSectionRepo = courseSectionRepo;
         this.courseLectureRepo = courseLectureRepo;
+        this.courseFileRepo = courseFileRepo;
         this.fileStorageLocation = Paths.get("src/main/resources/static").toAbsolutePath().normalize();
         this.createDirectory(fileStorageLocation);
     }
 
-    // Store course and user images
+    // Store videos, files, course and user images
     public String storeFile(MultipartFile file, String type, Long courseId, Long lectureId) {
         String userName = authService.getLoggedInUser().getUsername();
         Course course = courseRepo.findById(courseId).orElseThrow(() -> new CustomException("Course not found", HttpStatus.NOT_FOUND));
@@ -58,6 +59,7 @@ public class FileService {
         this.createDirectory(path);
 
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileExtension = this.getFileExtension(fileName).get();
 
         try {
             if (fileName.contains("..")) {
@@ -69,19 +71,26 @@ public class FileService {
             if (type.equals("logo")) {
                 logger.info("type: logo");
                 course.setImage_name(fileName);
-                course.setImage_format(this.getFileExtension(fileName).get());
+                course.setImage_format(fileExtension);
                 course.setImage_path(path.toString());
                 courseRepo.save(course);
             } else if (type.equals("avatar")) {
                 logger.info("type: avatar");
             } else if (type.equals("files")) {
                 logger.info("file");
+                CourseLecture lecture = courseLectureRepo.findById(lectureId).orElseThrow(() -> new CustomException("Course lecture not found", HttpStatus.NOT_FOUND));
+                CourseFile courseFile = new CourseFile();
+                courseFile.setCourseLecture(lecture);
+                courseFile.setFileName(fileName);
+                courseFile.setFilePath(path.toString());
+                courseFile.setFileFormat(fileExtension);
+                courseFileRepo.save(courseFile);
             } else if (type.equals("videos")) {
                 logger.info("video");
                 CourseLecture lecture = courseLectureRepo.findById(lectureId).orElseThrow(() -> new CustomException("Course lecture not found", HttpStatus.NOT_FOUND));
                 lecture.setVideoName(fileName);
                 lecture.setVideoPath(path.toString());
-                lecture.setVideoFormat(this.getFileExtension(fileName).get());
+                lecture.setVideoFormat(fileExtension);
                 courseLectureRepo.save(lecture);
             }
             return fileName;

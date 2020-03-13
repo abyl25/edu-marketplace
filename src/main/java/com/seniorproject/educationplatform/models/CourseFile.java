@@ -2,11 +2,17 @@ package com.seniorproject.educationplatform.models;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 
 @Entity
 @Data
-public class CourseResource {
+public class CourseFile {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="RESOURCE_SEQ")
     @SequenceGenerator(name="RESOURCE_SEQ", sequenceName = "RESOURCE_SEQ", allocationSize = 1)
@@ -18,6 +24,10 @@ public class CourseResource {
 
     private String name;
 
-    private String link; // ?
+    private String fileName;
+
+    private String filePath;
+
+    private String fileFormat;
 
 }

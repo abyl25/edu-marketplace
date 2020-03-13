@@ -47,9 +47,6 @@ public class FileController {
     * */
     @PostMapping("/files")
     public ResponseEntity<Object> uploadFile(@RequestPart(value = "file") MultipartFile file, @RequestParam String type, @RequestParam Long courseId, @RequestParam(required = false) Long lectureId) {
-        logger.info("type: " + type);
-        logger.info("courseId: " + courseId);
-        logger.info("lectureId: " + lectureId);
         String fileName = this.fileService.storeFile(file, type, courseId, lectureId);
         return ResponseEntity.ok("Uploaded, filename: " + fileName);
     }

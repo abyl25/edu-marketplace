@@ -1,9 +1,12 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -30,8 +33,10 @@ public class CourseLecture {
 
     private boolean completed = false;
 
-//    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.EAGER)
-//    private Set<CourseResource> courseResources = new HashSet<>();
+    @JsonIgnoreProperties("courseLecture")
+    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id asc")
+    private List<CourseFile> files = new ArrayList<>();
 
 //    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.EAGER)
 //    private Set<LectureQA> lectureQAs = new HashSet<>();
