@@ -25,6 +25,7 @@ public class CourseSection {
 
     @JsonIgnoreProperties("courseSection")
     @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id asc")
     private List<CourseLecture> lectures = new ArrayList<>();
     
 //    @OneToMany(mappedBy = "courseSection", fetch = FetchType.LAZY)

@@ -43,11 +43,14 @@ public class FileController {
 
     /*
     *  @RequestParam String type
-    *  types: logo, avatar, file, video
+    *  types: logo, avatar, files, videos
     * */
     @PostMapping("/files")
-    public ResponseEntity<Object> uploadFile(@RequestPart(value = "file") MultipartFile file, @RequestParam String type, @RequestParam Long courseId) {
-        String fileName = this.fileService.storeFile(file, type, courseId);
+    public ResponseEntity<Object> uploadFile(@RequestPart(value = "file") MultipartFile file, @RequestParam String type, @RequestParam Long courseId, @RequestParam(required = false) Long lectureId) {
+        logger.info("type: " + type);
+        logger.info("courseId: " + courseId);
+        logger.info("lectureId: " + lectureId);
+        String fileName = this.fileService.storeFile(file, type, courseId, lectureId);
         return ResponseEntity.ok("Uploaded, filename: " + fileName);
     }
 

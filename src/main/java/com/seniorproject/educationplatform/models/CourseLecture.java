@@ -20,7 +20,11 @@ public class CourseLecture {
 
     private String name;
 
-    private String videoLink;
+    private String videoName;
+
+    private String videoPath;
+
+    private String videoFormat;
 
 //    private float length; // ??? length of video lecture
 

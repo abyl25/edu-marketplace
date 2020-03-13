@@ -83,6 +83,7 @@ public class Course {
 
     @JsonIgnoreProperties("course")
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @OrderBy("id asc")
     private List<CourseSection> sections = new ArrayList<>();
 
 //    @JsonIgnoreProperties("course")

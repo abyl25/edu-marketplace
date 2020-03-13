@@ -49,7 +49,7 @@ public class FileService {
     }
 
     // Store course and user images
-    public String storeFile(MultipartFile file, String type, Long courseId) {
+    public String storeFile(MultipartFile file, String type, Long courseId, Long lectureId) {
         String userName = authService.getLoggedInUser().getUsername();
         Course course = courseRepo.findById(courseId).orElseThrow(() -> new CustomException("Course not found", HttpStatus.NOT_FOUND));
         String courseTitle = course.getTitle();
@@ -74,14 +74,16 @@ public class FileService {
                 courseRepo.save(course);
             } else if (type.equals("avatar")) {
                 logger.info("type: avatar");
-            } else if (type.equals("file")) {
+            } else if (type.equals("files")) {
                 logger.info("file");
-            } else if (type.equals("video")) {
+            } else if (type.equals("videos")) {
                 logger.info("video");
-//                CourseSection courseSection =
-//                CourseLecture lecture = new CourseLecture();
+                CourseLecture lecture = courseLectureRepo.findById(lectureId).orElseThrow(() -> new CustomException("Course lecture not found", HttpStatus.NOT_FOUND));
+                lecture.setVideoName(fileName);
+                lecture.setVideoPath(path.toString());
+                lecture.setVideoFormat(this.getFileExtension(fileName).get());
+                courseLectureRepo.save(lecture);
             }
-
             return fileName;
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
