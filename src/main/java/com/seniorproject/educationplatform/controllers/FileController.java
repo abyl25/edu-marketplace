@@ -1,10 +1,9 @@
 package com.seniorproject.educationplatform.controllers;
 
-import com.seniorproject.educationplatform.exception.CustomException;
+import com.seniorproject.educationplatform.exceptions.CustomException;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
 import com.seniorproject.educationplatform.services.FileService;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
@@ -57,9 +56,10 @@ public class FileController {
         return ResponseEntity.ok("Uploaded, filename: " + fileName);
     }
 
-    @GetMapping("/files/{name:.+}")
-    public ResponseEntity<Resource> loadFileAsResource(@PathVariable String name) throws IOException {
-        Resource resource = fileService.loadFileAsResource(name);
+    @GetMapping(value = "/files/{name:.+}") // , produces = MediaType.ALL_VALUE
+    public ResponseEntity<Resource> loadFileAsResource(@PathVariable String name, @RequestParam(required=false) Long cid) throws IOException {
+        Resource resource = fileService.loadFileAsResource(name, cid);
+
         String filePath = resource.getFile().getAbsolutePath();
         String mimeType = this.getFileMimeType(name);
 

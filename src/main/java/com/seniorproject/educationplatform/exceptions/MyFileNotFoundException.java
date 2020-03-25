@@ -1,4 +1,4 @@
-package com.seniorproject.educationplatform.exception;
+package com.seniorproject.educationplatform.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,4 +1,4 @@
-package com.seniorproject.educationplatform.config;
+package com.seniorproject.educationplatform.configs;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;

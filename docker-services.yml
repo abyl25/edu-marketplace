@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+#  nginx:
+##    image: nginx:alpine
+#    build: ./nginx
+#    restart: always
+#    ports:
+#      - 80:80
+#      - 443:443
+#    volumes:
+#      - "/docker-volumes/my-nginx/var/www:/var/www"
+#      - "/docker-volumes/my-nginx/var/log/nginx:/var/log/nginx"
+##      - "/docker-volumes/my-nginx/etc/nginx:/etc/nginx"
+
+  redis:
+    image: redis
+    restart: on-failure
+    ports:
+      - 6380:6379
+    volumes:
+      - "/docker-volumes/my-redis/data:/data"
+      - "/docker-volumes/my-redis/logs:/var/log"
+    #      - "/docker-volumes/my-redis/etc:/etc"
+    hostname: "my-redis"
+
+  rabbitmq:
+    image: rabbitmq:3.8.2-management
+    restart: on-failure
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"  # ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"  # ${RABBITMQ_DEFAULT_PASS}
+      # RABBITMQ_ERLANG_COOKIE: "s3cr3tc00ki3"  # ${RABBITMQ_ERLANG_COOKIE}
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+#      - "/docker-volumes/my-rabbitmq/etc:/etc/rabbitmq"
+      - "/docker-volumes/my-rabbitmq/data:/var/lib/rabbitmq"
+      - "/docker-volumes/my-rabbitmq/log:/var/log/rabbitmq"

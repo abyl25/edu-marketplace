@@ -3,8 +3,7 @@ package com.seniorproject.educationplatform.services;
 import com.seniorproject.educationplatform.dto.auth.LoginRequestDto;
 import com.seniorproject.educationplatform.dto.auth.PasswordUpdateDto;
 import com.seniorproject.educationplatform.dto.auth.SignUpRequestDto;
-import com.seniorproject.educationplatform.exception.CustomException;
-import com.seniorproject.educationplatform.exception.UsernameAlreadyExistsException;
+import com.seniorproject.educationplatform.exceptions.UsernameAlreadyExistsException;
 import com.seniorproject.educationplatform.models.Cart;
 import com.seniorproject.educationplatform.models.PasswordResetToken;
 import com.seniorproject.educationplatform.models.Role;
@@ -15,7 +14,6 @@ import com.seniorproject.educationplatform.security.JwtTokenProvider;
 import com.seniorproject.educationplatform.security.JwtUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -163,6 +161,11 @@ public class AuthService {
 
         userService.save(user);
         return ResponseEntity.ok("Password updated successfully! Log in again");
+    }
+
+    public boolean isAuthenticated() {
+        JwtUser JwtUser = getLoggedInUser();
+        return JwtUser != null;
     }
 
     public JwtUser getLoggedInUser() {

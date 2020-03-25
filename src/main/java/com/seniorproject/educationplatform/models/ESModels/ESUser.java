@@ -1,4 +1,4 @@
-package com.seniorproject.educationplatform.ESModels;
+package com.seniorproject.educationplatform.models.ESModels;
 
 import com.seniorproject.educationplatform.models.Role;
 import com.seniorproject.educationplatform.models.Status;

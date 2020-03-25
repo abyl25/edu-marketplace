@@ -1,17 +1,17 @@
-package com.seniorproject.educationplatform.exception;
+package com.seniorproject.educationplatform.exceptions;
 
-import com.seniorproject.educationplatform.security.JwtAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
@@ -59,16 +59,16 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return ResponseEntity.status(422).body(ex.getMessage());
     }
 
-    @ExceptionHandler(CustomException.class) // NotInstructorCourseException
-    protected ResponseEntity<Object> CustomException(Exception ex, WebRequest request) {
-        log.info("LOG: CustomException: " + ex.getMessage());
-        return ResponseEntity.status(422).body(ex.getMessage());
-    }
-
     @ExceptionHandler(MyFileNotFoundException.class)
     protected ResponseEntity<Object> MyFileNotFoundException(Exception ex, WebRequest request) {
         log.info("LOG: MyFileNotFoundException: " + ex.getMessage());
         return ResponseEntity.status(404).body(ex.getMessage());
+    }
+
+    @ExceptionHandler({ CustomException.class })
+    protected ResponseEntity<Object> CustomException(Exception ex, WebRequest request) {
+        log.info("LOG: CustomException: " + ex.getMessage());
+        return ResponseEntity.status(422).contentType(MediaType.APPLICATION_JSON).body(ex.getMessage());
     }
 
 //    @ExceptionHandler(JwtAuthenticationException.class)

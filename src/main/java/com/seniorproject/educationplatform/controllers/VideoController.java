@@ -1,9 +1,10 @@
 package com.seniorproject.educationplatform.controllers;
 
-import com.seniorproject.educationplatform.exception.CustomException;
+import com.seniorproject.educationplatform.exceptions.CustomException;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
 import com.seniorproject.educationplatform.services.MultipartFileSender;
+import com.seniorproject.educationplatform.services.VideoService;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +25,26 @@ import java.nio.file.Paths;
 public class VideoController {
     private static final Logger logger = LoggerFactory.getLogger(VideoController.class);
     private CourseRepo courseRepo;
+    private VideoService videoService;
 
-    public VideoController(CourseRepo courseRepo) {
+    public VideoController(CourseRepo courseRepo, VideoService videoService) {
         this.courseRepo = courseRepo;
+        this.videoService = videoService;
+    }
+
+    @GetMapping("/video/process")
+    public void encodeVideo() throws IOException {
+//        videoService.processVideo("lesson1.mp4");
+    }
+
+    @GetMapping("/video/info")
+    public void getVideoMetaInfo() throws IOException {
+        videoService.getMediaInformation("lesson1.mp4");
+    }
+
+    @GetMapping("/video/thumbnail")
+    public void createVideoThumbnail() throws IOException {
+//        videoService.createVideoThumbnail("lesson1");
     }
 
     @PostMapping("/video")

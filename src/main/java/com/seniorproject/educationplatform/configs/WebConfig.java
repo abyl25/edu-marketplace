@@ -1,4 +1,4 @@
-package com.seniorproject.educationplatform.config;
+package com.seniorproject.educationplatform.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
@@ -12,7 +12,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -70,6 +69,7 @@ public class WebConfig implements WebMvcConfigurer {
         List<MediaType> list = new ArrayList<MediaType>();
         list.add(MediaType.IMAGE_JPEG);
         list.add(MediaType.IMAGE_PNG);
+        list.add(MediaType.IMAGE_GIF);
         list.add(MediaType.APPLICATION_PDF);
         list.add(MediaType.APPLICATION_OCTET_STREAM);
         return list;

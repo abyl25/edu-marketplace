@@ -1,6 +1,6 @@
-package com.seniorproject.educationplatform.ESRepos;
+package com.seniorproject.educationplatform.repositories.ESRepos;
 
-import com.seniorproject.educationplatform.ESModels.ESCourse;
+import com.seniorproject.educationplatform.models.ESModels.ESCourse;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.List;

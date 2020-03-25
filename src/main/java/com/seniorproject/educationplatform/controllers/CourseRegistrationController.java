@@ -1,7 +1,6 @@
 package com.seniorproject.educationplatform.controllers;
 
 import com.seniorproject.educationplatform.dto.course.CourseOrderReqDto;
-import com.seniorproject.educationplatform.dto.course.InstructorCourseStudents;
 import com.seniorproject.educationplatform.dto.course.MultiCourseOrderReqDto;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.services.CourseOrderService;

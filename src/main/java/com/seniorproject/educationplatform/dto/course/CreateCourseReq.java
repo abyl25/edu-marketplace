@@ -2,7 +2,6 @@ package com.seniorproject.educationplatform.dto.course;
 
 import com.seniorproject.educationplatform.validators.CategoryExists;
 import com.seniorproject.educationplatform.validators.MySequence;
-import com.seniorproject.educationplatform.validators.TitleExists;
 import com.seniorproject.educationplatform.validators.TopicExists;
 import lombok.Data;
 

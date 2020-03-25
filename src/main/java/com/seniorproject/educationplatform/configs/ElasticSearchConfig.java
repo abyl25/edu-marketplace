@@ -1,4 +1,4 @@
-package com.seniorproject.educationplatform.config;
+package com.seniorproject.educationplatform.configs;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
@@ -16,7 +16,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Configuration
-@EnableElasticsearchRepositories(basePackages = "com.seniorproject.educationplatform.ESRepos")
+@EnableElasticsearchRepositories(basePackages = "com.seniorproject.educationplatform.repositories.ESRepos")
 public class ElasticSearchConfig {
     @Value("${spring.data.elasticsearch.cluster-name}")
     private String clusterName;

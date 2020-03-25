@@ -3,8 +3,6 @@ package com.seniorproject.educationplatform.controllers;
 import com.amazonaws.util.IOUtils;
 import com.seniorproject.educationplatform.services.AmazonS3Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

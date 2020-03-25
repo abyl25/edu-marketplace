@@ -1,7 +1,6 @@
-package com.seniorproject.educationplatform.config;
+package com.seniorproject.educationplatform.configs;
 
 import com.seniorproject.educationplatform.security.JwtConfigurer;
-import com.seniorproject.educationplatform.security.JwtTokenFilter;
 import com.seniorproject.educationplatform.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;

@@ -1,11 +1,10 @@
 package com.seniorproject.educationplatform.controllers;
 
-import com.seniorproject.educationplatform.ESModels.ESCourse;
+import com.seniorproject.educationplatform.models.ESModels.ESCourse;
 import com.seniorproject.educationplatform.dto.course.*;
 import com.seniorproject.educationplatform.dto.course.resp.AddLectureRespDto;
 import com.seniorproject.educationplatform.dto.course.resp.AddSectionRespDto;
 import com.seniorproject.educationplatform.models.Course;
-import com.seniorproject.educationplatform.models.CourseLecture;
 import com.seniorproject.educationplatform.services.CourseOrderService;
 import com.seniorproject.educationplatform.services.CourseService;
 import lombok.extern.slf4j.Slf4j;

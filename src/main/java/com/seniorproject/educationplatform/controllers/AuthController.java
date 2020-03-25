@@ -3,7 +3,6 @@ package com.seniorproject.educationplatform.controllers;
 import com.seniorproject.educationplatform.dto.auth.LoginRequestDto;
 import com.seniorproject.educationplatform.dto.auth.PasswordUpdateDto;
 import com.seniorproject.educationplatform.dto.auth.SignUpRequestDto;
-import com.seniorproject.educationplatform.exception.CustomException;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.security.JwtUser;
 import com.seniorproject.educationplatform.services.AuthService;
@@ -12,10 +11,7 @@ import com.seniorproject.educationplatform.services.VerificationTokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

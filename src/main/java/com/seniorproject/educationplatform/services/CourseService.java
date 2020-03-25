@@ -1,13 +1,13 @@
 package com.seniorproject.educationplatform.services;
 
-import com.seniorproject.educationplatform.ESModels.ESCourse;
-import com.seniorproject.educationplatform.ESModels.ESUser;
-import com.seniorproject.educationplatform.ESRepos.CourseSearchRepo;
+import com.seniorproject.educationplatform.models.ESModels.ESCourse;
+import com.seniorproject.educationplatform.models.ESModels.ESUser;
+import com.seniorproject.educationplatform.repositories.ESRepos.CourseSearchRepo;
 import com.seniorproject.educationplatform.dto.course.*;
 import com.seniorproject.educationplatform.dto.course.resp.AddLectureRespDto;
 import com.seniorproject.educationplatform.dto.course.resp.AddSectionRespDto;
 import com.seniorproject.educationplatform.dto.course.resp.CoursesRespDto;
-import com.seniorproject.educationplatform.exception.CustomException;
+import com.seniorproject.educationplatform.exceptions.CustomException;
 import com.seniorproject.educationplatform.models.*;
 import com.seniorproject.educationplatform.repositories.*;
 import com.seniorproject.educationplatform.security.JwtUser;

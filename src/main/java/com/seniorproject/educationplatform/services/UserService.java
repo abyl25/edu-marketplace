@@ -1,6 +1,6 @@
 package com.seniorproject.educationplatform.services;
 
-import com.seniorproject.educationplatform.ESModels.ESUser;
+import com.seniorproject.educationplatform.models.ESModels.ESUser;
 import com.seniorproject.educationplatform.dto.auth.SignUpRequestDto;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.repositories.UserRepo;

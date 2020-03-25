@@ -1,11 +1,8 @@
 package com.seniorproject.educationplatform.controllers;
 
-import com.seniorproject.educationplatform.models.Cart;
 import com.seniorproject.educationplatform.models.CartItem;
-import com.seniorproject.educationplatform.security.JwtUser;
 import com.seniorproject.educationplatform.services.AuthService;
 import com.seniorproject.educationplatform.services.CartService;
-import com.seniorproject.educationplatform.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
