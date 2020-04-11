@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Data
-public class CourseLecture {
+public class CourseLecture implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="LECTURE_SEQ")
     @SequenceGenerator(name="LECTURE_SEQ", sequenceName = "LECTURE_SEQ", allocationSize = 1)
@@ -29,7 +30,9 @@ public class CourseLecture {
 
     private String videoFormat;
 
-//    private float length; // ??? length of video lecture
+    private String videoThumbnail;
+
+    private double duration;
 
     private boolean completed = false;
 

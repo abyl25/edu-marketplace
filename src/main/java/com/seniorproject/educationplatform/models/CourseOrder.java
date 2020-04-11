@@ -7,11 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import java.io.Serializable;
 import java.sql.Date;
 
 @Data
 @Entity
-public class CourseOrder {
+public class CourseOrder implements Serializable {
     @EmbeddedId
     private CourseOrderKey id;
 

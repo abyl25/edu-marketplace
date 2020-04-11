@@ -33,3 +33,4 @@ build/
 #
 application.properties
 src/main/resources/static/
+src/main/resources/files/

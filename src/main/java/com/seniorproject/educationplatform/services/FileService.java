@@ -1,6 +1,7 @@
 package com.seniorproject.educationplatform.services;
 
 import com.seniorproject.educationplatform.components.VideoProcessingProducer;
+import com.seniorproject.educationplatform.dto.file.VideoDto;
 import com.seniorproject.educationplatform.dto.rabbitmq.VideoProcessMessage;
 import com.seniorproject.educationplatform.exceptions.CustomException;
 import com.seniorproject.educationplatform.exceptions.MyFileNotFoundException;
@@ -44,22 +45,24 @@ public class FileService {
     private CourseFileRepo courseFileRepo;
     private CourseOrderRepo courseOrderRepo;
     private VideoProcessingProducer producer;
+    private VideoService videoService;
     private Path fileStorageLocation;
 
-    public FileService(AuthService authService, CourseRepo courseRepo, CourseLectureRepo courseLectureRepo, CourseFileRepo courseFileRepo, CourseOrderRepo courseOrderRepo, VideoProcessingProducer producer) {
+    public FileService(AuthService authService, CourseRepo courseRepo, CourseLectureRepo courseLectureRepo, CourseFileRepo courseFileRepo, CourseOrderRepo courseOrderRepo, VideoProcessingProducer producer, VideoService videoService) {
         this.authService = authService;
         this.courseRepo = courseRepo;
         this.courseLectureRepo = courseLectureRepo;
         this.courseFileRepo = courseFileRepo;
         this.courseOrderRepo = courseOrderRepo;
         this.producer = producer;
-        this.fileStorageLocation = Paths.get("src/main/resources/static").toAbsolutePath().normalize();
+        this.videoService = videoService;
+        this.fileStorageLocation = Paths.get("/var/www/edu-marketplace").toAbsolutePath().normalize(); // src/main/resources/static
         this.createDirectory(fileStorageLocation);
     }
 
     // Store videos, files, course and user images
     public String storeFile(MultipartFile file, String type, Long courseId, Long lectureId) {
-        logger.info("storeFile(), Thread name: " + Thread.currentThread().getName());
+        logger.info("storeFile(), thread name: " + Thread.currentThread().getName());
 //        String userName = authService.getLoggedInUser().getUsername();
         Course course = courseRepo.findById(courseId).orElseThrow(() -> new CustomException("Course not found", HttpStatus.NOT_FOUND));
         String courseTitle = course.getTitle();
@@ -83,7 +86,8 @@ public class FileService {
             this.saveFileInfoToDB(course, type, lectureId, fileName, fileExtension, path);
             return fileName;
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("exception: " + ex.getMessage());
+            ex.printStackTrace();
             throw new CustomException("Could not store file " + fileName + ". Please try again!", HttpStatus.BAD_REQUEST);
         }
     }
@@ -91,17 +95,14 @@ public class FileService {
     private void saveFileInfoToDB(Course course, String type, Long lectureId, String fileName, String extension, Path path) {
         switch (type) {
             case "logo":
-                logger.info("type: logo");
-                course.setImage_name(fileName);
-                course.setImage_format(extension);
-                course.setImage_path(path.toString());
+                course.setImageName(fileName);
+                course.setImageFormat(extension);
+                course.setImagePath(path.toString());
                 courseRepo.save(course);
                 break;
             case "avatar":
-                logger.info("type: avatar");
                 break;
             case "files": {
-                logger.info("file");
                 CourseLecture lecture = courseLectureRepo.findById(lectureId).orElseThrow(() -> new CustomException("Course lecture not found", HttpStatus.NOT_FOUND));
                 CourseFile courseFile = new CourseFile();
                 courseFile.setCourseLecture(lecture);
@@ -112,11 +113,21 @@ public class FileService {
                 break;
             }
             case "videos": {
-                logger.info("video");
+                VideoDto videoDto = null;
+                String videoName = fileName + "." + extension;
+                try {
+                    videoDto = videoService.getMediaInformation(videoName, path);
+                    videoService.createVideoThumbnail(path, fileName, extension, "png");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 CourseLecture lecture = courseLectureRepo.findById(lectureId).orElseThrow(() -> new CustomException("Course lecture not found", HttpStatus.NOT_FOUND));
                 lecture.setVideoName(fileName);
                 lecture.setVideoPath(path.toString());
                 lecture.setVideoFormat(extension);
+                lecture.setDuration(videoDto.getDuration());
+                lecture.setVideoThumbnail(fileName + ".png");
                 courseLectureRepo.save(lecture);
 
                 VideoProcessMessage message = new VideoProcessMessage();
@@ -125,7 +136,7 @@ public class FileService {
                 message.setExtension(extension);
                 message.setWidth(1920);
                 message.setHeight(1080);
-                producer.produceMessage(message);
+//                producer.produceMessage(message);
                 break;
             }
         }

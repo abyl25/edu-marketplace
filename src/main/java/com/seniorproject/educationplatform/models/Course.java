@@ -5,15 +5,17 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
-public class Course {
+public class Course implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="COURSE_SEQ")
     @SequenceGenerator(name="COURSE_SEQ", sequenceName = "COURSE_SEQ", allocationSize = 1)
@@ -44,11 +46,11 @@ public class Course {
     @Enumerated(EnumType.STRING)
     private CourseStatus status;
 
-    private String image_name;
+    private String imageName;
 
-    private String image_format;
+    private String imageFormat;
 
-    private String image_path;
+    private String imagePath;
 
 //    private boolean featuredCourse;
 
@@ -81,6 +83,7 @@ public class Course {
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 
+    @ToString.Exclude
     @JsonIgnoreProperties("course")
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     @OrderBy("id asc")

@@ -13,14 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
-public class Category {
+public class Category implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="CATEGORY_SEQ")
     @SequenceGenerator(name="CATEGORY_SEQ", sequenceName = "CATEGORY_SEQ", allocationSize = 1)

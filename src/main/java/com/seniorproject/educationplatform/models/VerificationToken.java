@@ -3,12 +3,13 @@ package com.seniorproject.educationplatform.models;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @Entity
-public class VerificationToken {
+public class VerificationToken implements Serializable {
     public static final String STATUS_PENDING = "PENDING";
     public static final String STATUS_VERIFIED = "VERIFIED";
     @Id

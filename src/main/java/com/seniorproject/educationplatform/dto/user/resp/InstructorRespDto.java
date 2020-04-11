@@ -2,8 +2,10 @@ package com.seniorproject.educationplatform.dto.user.resp;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class InstructorRespDto {
+public class InstructorRespDto implements Serializable {
     private String firstName;
 
     private String lastName;

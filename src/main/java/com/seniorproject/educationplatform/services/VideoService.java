@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.services;
 
+import com.seniorproject.educationplatform.dto.file.VideoDto;
 import com.seniorproject.educationplatform.dto.rabbitmq.VideoProcessMessage;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
@@ -13,12 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 
 @Service
 public class VideoService {
     private static final Logger logger = LoggerFactory.getLogger(VideoService.class);
-    private final String basePath = "/home/abylay/Desktop/video-thumbnail-sample";
+//    private final String basePath = "/home/abylay/Desktop/video-thumbnail-sample";
+    private final String basePath = "/var/www/edu-marketplace";
     private FFmpeg ffmpeg;
     private FFprobe ffprobe;
 
@@ -31,25 +34,31 @@ public class VideoService {
         }
     }
 
-    public void getMediaInformation(String videoName) throws IOException {
-        FFmpegProbeResult probeResult = ffprobe.probe(basePath + "/" + videoName);
+    public VideoDto getMediaInformation(String videoName, Path path) throws IOException {
+        FFmpegProbeResult probeResult = ffprobe.probe(path.resolve(videoName).toString());
         FFmpegFormat format = probeResult.getFormat();
-        System.out.format("%nFile: '%s' ; Format: '%s' ; Duration: %.3fs",
-                format.filename,
-                format.format_long_name,
-                format.duration
-        );
         FFmpegStream stream = probeResult.getStreams().get(0);
-        System.out.format("%nCodec: '%s' ; Width: %dpx ; Height: %dpx",
-                stream.codec_long_name,
-                stream.width,
-                stream.height
-        );
+
+        VideoDto videoDto = new VideoDto();
+        videoDto.setName(format.filename);
+        videoDto.setFormat(format.format_name);
+        videoDto.setLongFormat(format.format_long_name);
+        videoDto.setDuration(Math.floor(format.duration));
+        videoDto.setSize(format.size);
+        videoDto.setHeight(stream.height);
+        videoDto.setWidth(stream.width);
+        videoDto.setDisplayAspectRatio(stream.display_aspect_ratio);
+        videoDto.setFrames(stream.avg_frame_rate.getNumerator());
+        videoDto.setVideoBitrate(stream.bit_rate);
+        videoDto.setVideoCodec(stream.codec_name);
+        videoDto.setVideoCodecLong(stream.codec_long_name);
+        System.out.println(videoDto);
+        return videoDto;
     }
 
     public void processVideo(VideoProcessMessage videoMessage) throws IOException {
         logger.info("processVideo(), Thread name: " + Thread.currentThread().getName());
-        this.createVideoThumbnail(videoMessage.getPath(), videoMessage.getVideoName());
+//        this.createVideoThumbnail(videoMessage.getPath(), videoMessage.getVideoName(), "png");
 
         FFmpegProbeResult probeResult = ffprobe.probe(videoMessage.getPath() + "/" + videoMessage.getVideoName() + "." + videoMessage.getExtension());
         FFmpegBuilder builder = new FFmpegBuilder()
@@ -74,28 +83,24 @@ public class VideoService {
         executor.createJob(builder).run();
     }
 
-    public void createVideoThumbnail(String path, String videoName) throws IOException {
-//        FFmpeg ffmpeg = new FFmpeg("/usr/bin/ffmpeg");
-
-        FFmpegBuilder builder = new FFmpegBuilder()
-            .setInput(path + "/" + videoName + ".mp4")
-            .addOutput(path + "/" + videoName + ".png")
-            .setFrames(1)
-            .setStartOffset(1000, TimeUnit.MILLISECONDS)
-            .setVideoFilter("select='gte(n\\,10)',scale=1000:-1")
-            .done();
-
+    public void createVideoThumbnail(Path path, String videoName, String videoFormat, String imageFormat) throws IOException {
+        String input = path.resolve(videoName + "." + videoFormat).toString();
+        String output = path.resolve(videoName + "." + imageFormat).toString();
+        int frames = 1;
+        long offset = 1000;
+        int scale = 1000;
+        FFmpegBuilder builder = this.videoThumbnailBuilder(input, output, frames, offset, scale);
         FFmpegExecutor executor = new FFmpegExecutor(ffmpeg);
         executor.createJob(builder).run();
     }
 
-    private FFmpegBuilder videoThumbnailBuilder(String input, String output, long offset) {
+    private FFmpegBuilder videoThumbnailBuilder(String input, String output, int frames, long offset, int scale) {
         return new FFmpegBuilder()
                 .setInput(input)
                 .addOutput(output)
-                .setFrames(1)
-                .setStartOffset(0, TimeUnit.MILLISECONDS)
-                .setVideoFilter("select='gte(n\\,10)',scale=700:-1")
+                .setFrames(frames)
+                .setStartOffset(offset, TimeUnit.MILLISECONDS)
+                .setVideoFilter("select='gte(n\\,10)',scale=" + scale + ":-1")
                 .done();
     }
 }

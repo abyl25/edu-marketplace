@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Data
-public class Topic {
+public class Topic implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="TOPIC_SEQ")
     @SequenceGenerator(name="TOPIC_SEQ", sequenceName = "TOPIC_SEQ", allocationSize = 1)

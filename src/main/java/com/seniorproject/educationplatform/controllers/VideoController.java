@@ -39,7 +39,7 @@ public class VideoController {
 
     @GetMapping("/video/info")
     public void getVideoMetaInfo() throws IOException {
-        videoService.getMediaInformation("lesson1.mp4");
+        videoService.getMediaInformation("lesson1.mp4", null);
     }
 
     @GetMapping("/video/thumbnail")

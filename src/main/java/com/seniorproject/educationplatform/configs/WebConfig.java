@@ -6,13 +6,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
@@ -20,17 +26,37 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
+@EnableAsync
 public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry
+            .addResourceHandler("/api/files/**")
+            .addResourceLocations("file:/home/abylay/IdeaProjects/education-platform/src/main/resources/files/");
+    }
 
     @Override
     public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
         configurer.setDefaultTimeout(-1);
-        configurer.setTaskExecutor(asyncTaskExecutor());
+//        configurer.setTaskExecutor(asyncTaskExecutor());
+        configurer.setTaskExecutor(threadPoolTaskExecutor());
     }
 
     @Bean
     public AsyncTaskExecutor asyncTaskExecutor() {
         return new SimpleAsyncTaskExecutor("async");
+    }
+
+    @Bean(name = "threadPoolTaskExecutor")
+    public AsyncTaskExecutor threadPoolTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(5);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("TaskExecutorThread-");
+        executor.initialize();
+        return executor;
     }
 
     @Override

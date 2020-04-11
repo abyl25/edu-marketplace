@@ -19,7 +19,7 @@ public class VideoProcessingConsumer {
         this.videoService = videoService;
     }
 
-    @RabbitListener(queues="${rabbitmq.queue.name}")
+    @RabbitListener(queues="${rabbitmq.queue.name}", autoStartup = "false")
     public void consumeMessage(VideoProcessMessage message) throws IOException {
         logger.info("Video Processing, DirectExchange Consumer, Thread name: " + Thread.currentThread().getName());
         logger.info("Message: " + message);

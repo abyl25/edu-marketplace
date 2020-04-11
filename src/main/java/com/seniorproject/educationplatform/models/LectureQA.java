@@ -9,11 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
 @Data
-public class LectureQA {
+public class LectureQA implements Serializable {
     // save as Tree, use Nested Set Model?
 
     @Id

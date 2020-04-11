@@ -16,6 +16,8 @@ import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -70,17 +72,18 @@ public class CourseService {
         this.modelMapper = modelMapper;
     }
 
-    public ResponseEntity<Object> getCourses(String status) {
+//    @Cacheable(value = "all-courses")
+    public List<CoursesRespDto> getCourses(String status) {
         List<Course> courses;
         if (status == null) {
             courses = courseRepo.findAll();
         } else {
-            CourseStatus courseStatus;
+            CourseStatus courseStatus = null;
             try {
                 courseStatus = CourseStatus.valueOf(status);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
-                return new ResponseEntity<>("Course status: " + status + " does not exist", HttpStatus.NOT_FOUND);
+//                return new ResponseEntity("Course status: " + status + " does not exist", HttpStatus.NOT_FOUND);
             }
             courses = getCourseByStatus(courseStatus);
         }
@@ -93,7 +96,12 @@ public class CourseService {
             coursesDto.get(i).getInstructor().setStudentsCount(studentsCountList.get(i));
             coursesDto.get(i).getInstructor().setCoursesCount(coursesCountList.get(i));
         }
-        return ResponseEntity.ok(coursesDto);
+        return coursesDto;
+        // return ResponseEntity.ok(coursesDto);
+    }
+
+    @CacheEvict(value = "all-courses")
+    public void evictCoursesCache() {
     }
 
     public ResponseEntity<Object> getCoursesByPage(Pageable pageable) {
@@ -414,7 +422,7 @@ public class CourseService {
         course.setCategory(category);
         Topic topic = categoryService.getTopicByName(courseReq.getTopic().trim());
         course.setTopic(topic);
-        course.setImage_name("");
+        course.setImageName("");
         course.setStatus(CourseStatus.DRAFT);
         return course;
     }

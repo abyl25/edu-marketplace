@@ -55,6 +55,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/rest").permitAll()
 
             // static files
+            .antMatchers("/api/files/**").permitAll()
             .antMatchers("/api/static/**").permitAll()
 //            .antMatchers("/api/static/files").permitAll()
 //            .antMatchers("/api/static/download/**").permitAll()

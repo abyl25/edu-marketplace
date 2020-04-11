@@ -4,11 +4,12 @@ import com.seniorproject.educationplatform.dto.user.resp.InstructorRespDto;
 import com.seniorproject.educationplatform.models.*;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
 @Data
-public class CoursesRespDto {
+public class CoursesRespDto implements Serializable {
     private Long id;
 
     private String title;

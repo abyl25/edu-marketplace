@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.controllers;
 
+import com.seniorproject.educationplatform.dto.course.resp.CoursesRespDto;
 import com.seniorproject.educationplatform.models.ESModels.ESCourse;
 import com.seniorproject.educationplatform.dto.course.*;
 import com.seniorproject.educationplatform.dto.course.resp.AddLectureRespDto;
@@ -15,10 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -34,12 +32,25 @@ public class CourseController {
     }
 
     @GetMapping("/courses")
-    public ResponseEntity<Object> getCourses(@RequestParam(value="status", required=false) String status, @RequestParam(value="page", required=false) Integer page) {
-        if (page != null) {
-            Pageable pageable = PageRequest.of(page, 10);
-            return courseService.getCoursesByPage(pageable);
-        }
-        return courseService.getCourses(status);
+    public ResponseEntity<List<CoursesRespDto>> getCourses(@RequestParam(value="status", required=false) String status, @RequestParam(value="page", required=false) Integer page) {
+//        if (page != null) {
+//            Pageable pageable = PageRequest.of(page, 10);
+//            return courseService.getCoursesByPage(pageable);
+//        }
+        List<CoursesRespDto> courses = courseService.getCourses(status);
+        CoursesRespDto course = courses.get(0);
+        System.out.println("category: " + course.getCategory());
+        System.out.println("topic: " + course.getTopic());
+        course.getInstructor();
+        course.getCourseGoals();
+
+        return ResponseEntity.ok(courses); // new ArrayList<>()
+    }
+
+    @GetMapping("/courses/evict")
+    public String evictCoursesCache() {
+        courseService.evictCoursesCache();
+        return "evicted";
     }
 
     @GetMapping("/courses/{courseId:[0-9]+}")

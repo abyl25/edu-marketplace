@@ -46,6 +46,7 @@ public class FileController {
     * */
     @PostMapping("/files")
     public ResponseEntity<Object> uploadFile(@RequestPart(value = "file") MultipartFile file, @RequestParam String type, @RequestParam Long courseId, @RequestParam(required = false) Long lectureId) {
+        logger.info("uploadFile(), thread name: " + Thread.currentThread().getName());
         String fileName = this.fileService.storeFile(file, type, courseId, lectureId);
         return ResponseEntity.ok("Uploaded, filename: " + fileName);
     }
@@ -83,8 +84,8 @@ public class FileController {
     @GetMapping("/image/{id}")
     public ResponseEntity<Resource> getLogoByCourseId(@PathVariable Long id) throws IOException {
         Course course = courseRepo.findById(id).orElseThrow(() -> new CustomException("Course not found", HttpStatus.NOT_FOUND));
-        String filePath = course.getImage_path() + "/" + course.getImage_name();
-        String mimeType = this.getFileMimeType(course.getImage_name());
+        String filePath = course.getImagePath() + "/" + course.getImageName();
+        String mimeType = this.getFileMimeType(course.getImageName());
 
         final InputStream is = new FileInputStream(new File(filePath));
         Resource resource = new InputStreamResource(is);

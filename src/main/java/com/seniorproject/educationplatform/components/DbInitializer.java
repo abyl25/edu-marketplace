@@ -1,4 +1,4 @@
-package com.seniorproject.educationplatform.services;
+package com.seniorproject.educationplatform.components;
 
 import com.seniorproject.educationplatform.models.Category;
 import com.seniorproject.educationplatform.models.Role;

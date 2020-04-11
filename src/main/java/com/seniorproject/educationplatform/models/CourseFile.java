@@ -9,10 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import java.io.Serializable;
 
 @Entity
 @Data
-public class CourseFile {
+public class CourseFile implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="RESOURCE_SEQ")
     @SequenceGenerator(name="RESOURCE_SEQ", sequenceName = "RESOURCE_SEQ", allocationSize = 1)

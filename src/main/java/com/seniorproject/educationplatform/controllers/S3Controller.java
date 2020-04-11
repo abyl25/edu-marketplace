@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/files")
+@RequestMapping("/api/s3/files")
 public class S3Controller {
     private AmazonS3Service amazonS3Service;
 

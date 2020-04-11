@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
-public class Role {
+public class Role implements Serializable {
 //    User, Student, Instructor, Admin
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="ROLE_SEQ")

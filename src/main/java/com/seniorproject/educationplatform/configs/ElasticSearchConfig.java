@@ -18,6 +18,9 @@ import java.net.UnknownHostException;
 @Configuration
 @EnableElasticsearchRepositories(basePackages = "com.seniorproject.educationplatform.repositories.ESRepos")
 public class ElasticSearchConfig {
+    @Value("${spring.data.elasticsearch.host}")
+    private String host;
+
     @Value("${spring.data.elasticsearch.cluster-name}")
     private String clusterName;
 
@@ -28,7 +31,7 @@ public class ElasticSearchConfig {
                 .put("cluster.name", clusterName).build();
         TransportClient client = new PreBuiltTransportClient(elasticsearchSettings);
         try {
-            client.addTransportAddress(new TransportAddress(InetAddress.getByName("10.10.4.27"), 9300));
+            client.addTransportAddress(new TransportAddress(InetAddress.getByName(host), 9300));
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
