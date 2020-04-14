@@ -1,19 +1,18 @@
 package com.seniorproject.educationplatform.services;
 
 import com.seniorproject.educationplatform.components.VideoProcessingProducer;
+import com.seniorproject.educationplatform.dto.file.FileRespDto;
 import com.seniorproject.educationplatform.dto.file.VideoDto;
-import com.seniorproject.educationplatform.dto.rabbitmq.VideoProcessMessage;
 import com.seniorproject.educationplatform.exceptions.CustomException;
 import com.seniorproject.educationplatform.exceptions.MyFileNotFoundException;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.models.CourseFile;
 import com.seniorproject.educationplatform.models.CourseLecture;
-import com.seniorproject.educationplatform.repositories.CourseFileRepo;
-import com.seniorproject.educationplatform.repositories.CourseLectureRepo;
-import com.seniorproject.educationplatform.repositories.CourseOrderRepo;
-import com.seniorproject.educationplatform.repositories.CourseRepo;
+import com.seniorproject.educationplatform.models.Video;
+import com.seniorproject.educationplatform.repositories.*;
 import com.seniorproject.educationplatform.security.JwtUser;
 import org.apache.commons.io.IOUtils;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.InputStreamResource;
@@ -46,9 +45,11 @@ public class FileService {
     private CourseOrderRepo courseOrderRepo;
     private VideoProcessingProducer producer;
     private VideoService videoService;
+    private VideoRepo videoRepo;
     private Path fileStorageLocation;
+    private ModelMapper modelMapper;
 
-    public FileService(AuthService authService, CourseRepo courseRepo, CourseLectureRepo courseLectureRepo, CourseFileRepo courseFileRepo, CourseOrderRepo courseOrderRepo, VideoProcessingProducer producer, VideoService videoService) {
+    public FileService(AuthService authService, CourseRepo courseRepo, CourseLectureRepo courseLectureRepo, CourseFileRepo courseFileRepo, CourseOrderRepo courseOrderRepo, VideoProcessingProducer producer, VideoService videoService, VideoRepo videoRepo, ModelMapper modelMapper) {
         this.authService = authService;
         this.courseRepo = courseRepo;
         this.courseLectureRepo = courseLectureRepo;
@@ -56,12 +57,14 @@ public class FileService {
         this.courseOrderRepo = courseOrderRepo;
         this.producer = producer;
         this.videoService = videoService;
+        this.videoRepo = videoRepo;
+        this.modelMapper = modelMapper;
         this.fileStorageLocation = Paths.get("/var/www/edu-marketplace").toAbsolutePath().normalize(); // src/main/resources/static
         this.createDirectory(fileStorageLocation);
     }
 
     // Store videos, files, course and user images
-    public String storeFile(MultipartFile file, String type, Long courseId, Long lectureId) {
+    public FileRespDto storeFile(MultipartFile file, String type, Long courseId, Long lectureId) {
         logger.info("storeFile(), thread name: " + Thread.currentThread().getName());
 //        String userName = authService.getLoggedInUser().getUsername();
         Course course = courseRepo.findById(courseId).orElseThrow(() -> new CustomException("Course not found", HttpStatus.NOT_FOUND));
@@ -83,8 +86,7 @@ public class FileService {
             Path targetLocation = path.resolve(originalFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            this.saveFileInfoToDB(course, type, lectureId, fileName, fileExtension, path);
-            return fileName;
+            return this.saveFileMetaToDB(course, type, lectureId, fileName, fileExtension, path);
         } catch (IOException ex) {
             System.out.println("exception: " + ex.getMessage());
             ex.printStackTrace();
@@ -92,7 +94,8 @@ public class FileService {
         }
     }
 
-    private void saveFileInfoToDB(Course course, String type, Long lectureId, String fileName, String extension, Path path) {
+    private FileRespDto saveFileMetaToDB(Course course, String type, Long lectureId, String fileName, String extension, Path path) {
+        FileRespDto fileRespDto = new FileRespDto();
         switch (type) {
             case "logo":
                 course.setImageName(fileName);
@@ -109,7 +112,13 @@ public class FileService {
                 courseFile.setFileName(fileName);
                 courseFile.setFilePath(path.toString());
                 courseFile.setFileFormat(extension);
-                courseFileRepo.save(courseFile);
+                courseFile = courseFileRepo.save(courseFile);
+
+                fileRespDto.setId(courseFile.getId());
+                fileRespDto.setLectureId(lectureId);
+                fileRespDto.setFileName(fileName);
+                fileRespDto.setFileFormat(extension);
+                fileRespDto.setType(type);
                 break;
             }
             case "videos": {
@@ -121,25 +130,48 @@ public class FileService {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                System.out.println("videoDto: " + videoDto);
 
                 CourseLecture lecture = courseLectureRepo.findById(lectureId).orElseThrow(() -> new CustomException("Course lecture not found", HttpStatus.NOT_FOUND));
-                lecture.setVideoName(fileName);
-                lecture.setVideoPath(path.toString());
-                lecture.setVideoFormat(extension);
-                lecture.setDuration(videoDto.getDuration());
-                lecture.setVideoThumbnail(fileName + ".png");
-                courseLectureRepo.save(lecture);
+                Video newVideo = modelMapper.map(videoDto, Video.class);
+                newVideo.setName(fileName);
+                newVideo.setPath(path.toString());
+                newVideo.setExtension(extension);
+                newVideo.setThumbnail(fileName + ".png");
+                newVideo.setCourseLecture(lecture);
 
-                VideoProcessMessage message = new VideoProcessMessage();
-                message.setVideoName(fileName);
-                message.setPath(path.toString());
-                message.setExtension(extension);
-                message.setWidth(1920);
-                message.setHeight(1080);
+                Optional<Video> videoOptional = videoRepo.findById(lectureId);
+                if (videoOptional.isPresent()) {
+                    Video video = videoOptional.get();
+                    this.deleteFileFromFS(Paths.get(video.getFullName()));
+                    this.deleteFileFromFS(Paths.get(video.getPath() + "/" + video.getThumbnail()));
+                    newVideo.setId(video.getId());
+                    modelMapper.map(newVideo, video);
+                    videoRepo.save(video);
+                } else {
+                    videoRepo.save(newVideo);
+                }
+
+                // set response dto
+                fileRespDto.setId(newVideo.getId());
+                fileRespDto.setLectureId(lectureId);
+                fileRespDto.setFileName(fileName);
+                fileRespDto.setFileFormat(extension);
+//                fileRespDto.setVideoThumbnail(lecture.getVideoThumbnail());
+                fileRespDto.setType(type);
+
+                // send message to queue
+//                VideoProcessMessage message = new VideoProcessMessage();
+//                message.setVideoName(fileName);
+//                message.setPath(path.toString());
+//                message.setExtension(extension);
+//                message.setWidth(1920);
+//                message.setHeight(1080);
 //                producer.produceMessage(message);
                 break;
             }
         }
+        return fileRespDto;
     }
 
     // store common files
@@ -155,6 +187,25 @@ public class FileService {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
             throw new CustomException("Could not store file " + fileName + ". Please try again!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public void deleteFile(Long fileId, String type) {
+        switch (type) {
+            case "files":
+                CourseFile file = courseFileRepo.findById(fileId).orElseThrow(() -> new CustomException("Course file not found", HttpStatus.NOT_FOUND));
+                String fileName = file.getFileName() + "." + file.getFileFormat();
+                String fullPath = file.getFilePath() + "/" + fileName;
+                Path path = Paths.get(fullPath);
+                this.deleteFileFromFS(path);
+                courseFileRepo.deleteById(fileId);
+                break;
+            case "videos":
+                Video video = videoRepo.findById(fileId).orElseThrow(() -> new CustomException("Video not found", HttpStatus.NOT_FOUND));
+                videoRepo.deleteById(fileId);
+                this.deleteFileFromFS(Paths.get(video.getFullName()));
+                this.deleteFileFromFS(Paths.get(video.getPath() + "/" + video.getThumbnail()));
+                break;
         }
     }
 
@@ -203,6 +254,16 @@ public class FileService {
         } catch (Exception ex) {
             throw new CustomException("Could not create directory: " + path.toString(), HttpStatus.BAD_REQUEST);
         }
+    }
+
+    private boolean deleteFileFromFS (Path path) {
+        boolean deleted = false;
+        try {
+            deleted = Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return deleted;
     }
 
     private String getFileMimeType(String fileName) {

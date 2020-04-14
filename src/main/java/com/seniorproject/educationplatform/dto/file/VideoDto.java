@@ -9,6 +9,7 @@ public class VideoDto implements Serializable {
     private String name;
     private String path;
     private String extension;
+    private String fullName;
     private String longFormat;
     private String format;
     private double duration;

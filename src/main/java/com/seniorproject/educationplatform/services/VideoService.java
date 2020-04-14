@@ -40,7 +40,7 @@ public class VideoService {
         FFmpegStream stream = probeResult.getStreams().get(0);
 
         VideoDto videoDto = new VideoDto();
-        videoDto.setName(format.filename);
+        videoDto.setFullName(format.filename);
         videoDto.setFormat(format.format_name);
         videoDto.setLongFormat(format.format_long_name);
         videoDto.setDuration(Math.floor(format.duration));

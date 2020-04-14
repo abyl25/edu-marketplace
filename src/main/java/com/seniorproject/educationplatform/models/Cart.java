@@ -20,8 +20,8 @@ public class Cart implements Serializable {
     @ToString.Exclude
     @JsonIgnore
 //    @JsonIgnoreProperties("cart")
-    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
+    @OneToOne(fetch = FetchType.LAZY)
     private User student;
 
     @OneToMany(mappedBy = "cart", fetch=FetchType.EAGER)

@@ -6,9 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -24,17 +22,10 @@ public class CourseLecture implements Serializable {
 
     private String name;
 
-    private String videoName;
-
-    private String videoPath;
-
-    private String videoFormat;
-
-    private String videoThumbnail;
-
-    private double duration;
-
     private boolean completed = false;
+
+    @OneToOne(mappedBy = "courseLecture", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Video video = new Video();
 
     @JsonIgnoreProperties("courseLecture")
     @OneToMany(mappedBy = "courseLecture", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.controllers;
 
+import com.seniorproject.educationplatform.dto.file.FileRespDto;
 import com.seniorproject.educationplatform.exceptions.CustomException;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
@@ -47,14 +48,20 @@ public class FileController {
     @PostMapping("/files")
     public ResponseEntity<Object> uploadFile(@RequestPart(value = "file") MultipartFile file, @RequestParam String type, @RequestParam Long courseId, @RequestParam(required = false) Long lectureId) {
         logger.info("uploadFile(), thread name: " + Thread.currentThread().getName());
-        String fileName = this.fileService.storeFile(file, type, courseId, lectureId);
-        return ResponseEntity.ok("Uploaded, filename: " + fileName);
+        FileRespDto fileRespDto = this.fileService.storeFile(file, type, courseId, lectureId);
+        return ResponseEntity.ok(fileRespDto);
     }
 
     @PostMapping("/files/v2")
     public ResponseEntity<Object> uploadCommonFile(@RequestPart(value = "file") MultipartFile file) {
         String fileName = this.fileService.storeCommonFile(file);
         return ResponseEntity.ok("Uploaded, filename: " + fileName);
+    }
+
+    @DeleteMapping("/files/{fileId}")
+    public ResponseEntity<Object> deleteFile(@PathVariable Long fileId, @RequestParam String type) {
+        fileService.deleteFile(fileId, type);
+        return ResponseEntity.ok("File deleted!");
     }
 
     @GetMapping(value = "/files/{name:.+}") // , produces = MediaType.ALL_VALUE
