@@ -28,6 +28,7 @@ public class JwtUser implements UserDetails {
 //    }
 
     public JwtUser(Long id, String userName, String firstName, String lastName, String email, String password, Collection<? extends GrantedAuthority> authorities, boolean enabled, Cart cart) {
+//        this.user = user; // User user,
         this.id = id;
         this.userName = userName;
         this.firstName = firstName;

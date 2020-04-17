@@ -1,10 +1,12 @@
 package com.seniorproject.educationplatform.services;
 
+import com.seniorproject.educationplatform.exceptions.CustomException;
 import com.seniorproject.educationplatform.models.ESModels.ESUser;
 import com.seniorproject.educationplatform.dto.auth.SignUpRequestDto;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.repositories.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,8 +29,8 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    public Optional<User> getUserById(Long id) {
-        return userRepo.findById(id);
+    public User getUserById(Long id) {
+        return userRepo.findById(id).orElseThrow(() -> new CustomException("Sorry! Filename contains invalid path sequence ", HttpStatus.BAD_REQUEST));
     }
 
     public User findByUserName(String userName) {

@@ -35,7 +35,7 @@ public class UserController {
 
     @GetMapping("/users/{id}")
     public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id).get();
+        return userService.getUserById(id);
     }
 
     @DeleteMapping("/users/{id}")

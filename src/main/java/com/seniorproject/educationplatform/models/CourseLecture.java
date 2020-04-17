@@ -32,8 +32,9 @@ public class CourseLecture implements Serializable {
     @OrderBy("id asc")
     private List<CourseFile> files = new ArrayList<>();
 
+//    @JsonIgnoreProperties("courseLecture")
 //    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.EAGER)
-//    private Set<LectureQA> lectureQAs = new HashSet<>();
+//    private List<Post> posts = new ArrayList<>();
 
     public CourseLecture() {}
 

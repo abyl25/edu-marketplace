@@ -80,7 +80,7 @@ public class ReviewService {
     // Mappers
     private Review reviewDtoToEntity(AddReviewReqDto addReviewReqDto) {
         Review review = new Review();
-        review.setStudent(userService.getUserById(addReviewReqDto.getStudentId()).get());
+        review.setStudent(userService.getUserById(addReviewReqDto.getStudentId()));
         review.setCourse(courseService.getCourseById(addReviewReqDto.getCourseId()).get());
         review.setContent(addReviewReqDto.getContent());
         review.setRating(addReviewReqDto.getRating());

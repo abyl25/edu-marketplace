@@ -117,7 +117,7 @@ public class CourseOrderService {
     private CourseOrder courseOrderDtoToEntity(CourseOrderReqDto courseOrderReqDto) {
         CourseOrder courseOrder = new CourseOrder();
         courseOrder.setId(new CourseOrderKey(courseOrderReqDto.getStudentId(), courseOrderReqDto.getCourseId()));
-        User user = userService.getUserById(courseOrderReqDto.getStudentId()).get();
+        User user = userService.getUserById(courseOrderReqDto.getStudentId());
         courseOrder.setStudent(user);
         Course course = courseRepo.findById(courseOrderReqDto.getCourseId()).get();
         courseOrder.setCourse(course);

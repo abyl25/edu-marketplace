@@ -54,6 +54,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/").permitAll()
             .antMatchers("/rest").permitAll()
 
+            .antMatchers("/api/**").permitAll()
+
             // static files
             .antMatchers("/api/files/**").permitAll()
             .antMatchers("/api/static/**").permitAll()
@@ -104,6 +106,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/subcategories/**").permitAll()
             .antMatchers("/api/topics/**").permitAll()
             .antMatchers("/api/topic/**").permitAll()
+
+            // posts and comments
+            .antMatchers("/api/posts/**").permitAll()
 
             // Files
             .antMatchers("/api/files/**").permitAll()
