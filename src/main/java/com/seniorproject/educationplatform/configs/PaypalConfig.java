@@ -9,7 +9,6 @@ import com.paypal.base.rest.PayPalRESTException;
 
 @Configuration
 public class PaypalConfig {
-
     @Value("${paypal.client.id}")
     private String clientId;
 

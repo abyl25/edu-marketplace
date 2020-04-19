@@ -23,16 +23,28 @@ public class CommentController {
         return ResponseEntity.ok(comments);
     }
 
-//    @GetMapping("/lecture/{lectureId}/root-comments")
-//    public ResponseEntity<Object> getRootCommentsByLecture(@PathVariable Long lectureId) {
-//        List<Comment> comments = postService.getRootCommentsByLecture(lectureId);
-//        return ResponseEntity.ok(comments);
-//    }
+    @GetMapping("/lecture/{lectureId}/root-comments")
+    public ResponseEntity<Object> getRootCommentsByLecture(@PathVariable Long lectureId) {
+        List<Comment> comments = commentService.getRootCommentsByLecture(lectureId);
+        return ResponseEntity.ok(comments);
+    }
 
     @PostMapping("/lecture/{lectureId}/comments")
     public ResponseEntity<Object> addComment(@PathVariable Long lectureId, @RequestBody AddCommentReqDto addCommentReqDto) {
         Comment comment = commentService.addComment(lectureId, addCommentReqDto);
         return ResponseEntity.ok(comment);
+    }
+
+    @PutMapping("/comments/{commentId}")
+    public ResponseEntity<Object> editComment(@PathVariable Long commentId, @RequestBody AddCommentReqDto addCommentReqDto) {
+        Comment comment = commentService.editComment(commentId, addCommentReqDto);
+        return ResponseEntity.ok(comment);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<Object> deleteComment(@PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
+        return ResponseEntity.ok("Comment deleted");
     }
 
 }

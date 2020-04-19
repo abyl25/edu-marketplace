@@ -22,20 +22,13 @@ public class Comment implements Serializable {
 
     private Long parentId;
 
-//    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-//    @ManyToOne
-//    @JoinColumn(name = "parent_id")
-//    private Comment parent;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "prnt_id")
+    private Comment parent;
 
-////    @JsonIgnoreProperties({"parent"})
-//    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-//    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
-//    private List<Comment> children = new ArrayList<>();
-
-//    @JsonIgnoreProperties({"courseLecture", "user", "comments"})
-//    @ManyToOne
-//    @JoinColumn
-//    private Post post;
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> children = new ArrayList<>();
 
     @JsonIgnore
     @ManyToOne
@@ -52,6 +45,8 @@ public class Comment implements Serializable {
     private String content;
 
     private Date date;
+
+    private Date editedAt;
 
     public Comment() {}
 

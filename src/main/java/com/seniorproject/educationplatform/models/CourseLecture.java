@@ -25,7 +25,7 @@ public class CourseLecture implements Serializable {
     private boolean completed = false;
 
     @OneToOne(mappedBy = "courseLecture", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private Video video = new Video();
+    private Video video;
 
     @JsonIgnoreProperties("courseLecture")
     @OneToMany(mappedBy = "courseLecture", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
