@@ -1,8 +1,10 @@
 package com.seniorproject.educationplatform.services;
 
 import com.seniorproject.educationplatform.dto.review.AddReviewReqDto;
+import com.seniorproject.educationplatform.exceptions.CustomException;
 import com.seniorproject.educationplatform.models.Review;
 import com.seniorproject.educationplatform.repositories.ReviewRepo;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -31,14 +33,13 @@ public class ReviewService {
         return reviewRepo.findById(reviewId).orElse(null);
     }
 
-    public ResponseEntity addCourseReview(AddReviewReqDto addReviewReqDto) {
+    public Review addCourseReview(AddReviewReqDto addReviewReqDto) {
         boolean purchased = courseOrderService.checkIfStudentPurchasedCourse(addReviewReqDto.getStudentId(), addReviewReqDto.getCourseId());
         if (!purchased) {
-            return ResponseEntity.unprocessableEntity().body("Student can't write review");
+            throw new CustomException("Student can't write review", HttpStatus.UNPROCESSABLE_ENTITY);
         }
         Review review = reviewDtoToEntity(addReviewReqDto);
-        reviewRepo.save(review);
-        return ResponseEntity.ok("Review added");
+        return reviewRepo.save(review);
     }
 
     public void deleteCourseReview(Long reviewId) {

@@ -3,13 +3,7 @@ package com.seniorproject.educationplatform.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,7 +11,8 @@ import java.util.Date;
 @Data
 public class Review implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="REVIEW_SEQ")
+    @SequenceGenerator(name="REVIEW_SEQ", sequenceName = "REVIEW_SEQ", allocationSize = 1)
     private Long id;
 
     @JsonIgnoreProperties("student")
@@ -35,6 +30,8 @@ public class Review implements Serializable {
     private float rating;
 
     private Date addedDate;
+
+    private Date editedDate;
 
     private int helpfulCount = 0;
 
