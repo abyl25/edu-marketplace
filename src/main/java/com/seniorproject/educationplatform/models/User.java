@@ -47,6 +47,11 @@ public class User implements Serializable {
     @OneToOne(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Cart cart;
 
+    @JsonIgnoreProperties({"video", "files", "courseSection", "name", "students"})
+    @ManyToMany
+    @JoinTable(name = "student_lectures", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "lecture_id", referencedColumnName = "id")})
+    private List<CourseLecture> completedLectures = new ArrayList<>();
+
 //    @JsonIgnoreProperties("student")
 //    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY) //  cascade = CascadeType.ALL
 //    private List<CourseOrder> courseOrders = new ArrayList<>();

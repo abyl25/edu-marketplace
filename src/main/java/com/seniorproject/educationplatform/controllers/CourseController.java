@@ -82,6 +82,7 @@ public class CourseController {
         return courseService.updateCourseMainInfo(courseId, updateCourse);
     }
 
+    /* Course pre-requisites and goals */
     @GetMapping("/courses/{id:[0-9]+}/target")
     public ResponseEntity<Map<String, Object>> getCourseTarget(@PathVariable Long id) {
         return courseService.getCourseTarget(id);
@@ -180,6 +181,7 @@ public class CourseController {
         return courseService.getCourseByPermalink(permaLink);
     }
 
+    /* Course categories, subcategories and topics */
     @GetMapping("/courses/category/{categoryName}")
     public ResponseEntity<Object> getCoursesByCategoryName(@PathVariable String categoryName) throws Exception {
         return courseService.getAllCoursesByRootCategory(categoryName);
@@ -205,6 +207,7 @@ public class CourseController {
         return courseService.searchCourses(search);
     }
 
+    /* Instructor courses */
     @GetMapping("/instructor/{id}/courses")
     public ResponseEntity<Object> getCoursesByInstructor(@PathVariable Long id, @RequestParam(value="page", required=false) Integer page) {
         List<Course> courses = courseService.getCoursesByInstructor(id, page);

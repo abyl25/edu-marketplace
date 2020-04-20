@@ -1,5 +1,6 @@
 package com.seniorproject.educationplatform.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -22,8 +23,6 @@ public class CourseLecture implements Serializable {
 
     private String name;
 
-    private boolean completed = false;
-
     @OneToOne(mappedBy = "courseLecture", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Video video;
 
@@ -34,7 +33,11 @@ public class CourseLecture implements Serializable {
 
 //    @JsonIgnoreProperties("courseLecture")
 //    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.EAGER)
-//    private List<Post> posts = new ArrayList<>();
+//    private List<Comment> comments = new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "completedLectures")
+    private List<User> students = new ArrayList<>();
 
     public CourseLecture() {}
 
