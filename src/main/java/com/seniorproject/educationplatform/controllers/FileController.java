@@ -66,7 +66,7 @@ public class FileController {
 
     @GetMapping(value = "/files/{name:.+}") // , produces = MediaType.ALL_VALUE
     public ResponseEntity<Resource> loadFileAsResource(@PathVariable String name, @RequestParam(required=false) Long cid) throws IOException {
-        Resource resource = fileService.loadFileAsResource(name, cid);
+        Resource resource = fileService.loadFileAsResource(name, null, cid);
 
         String filePath = resource.getFile().getAbsolutePath();
         String mimeType = this.getFileMimeType(name);

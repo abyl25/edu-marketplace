@@ -3,9 +3,9 @@ package com.seniorproject.educationplatform.services;
 import com.seniorproject.educationplatform.dto.review.AddReviewReqDto;
 import com.seniorproject.educationplatform.exceptions.CustomException;
 import com.seniorproject.educationplatform.models.Review;
+import com.seniorproject.educationplatform.repositories.CourseRepo;
 import com.seniorproject.educationplatform.repositories.ReviewRepo;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,13 +15,13 @@ import java.util.List;
 public class ReviewService {
     private ReviewRepo reviewRepo;
     private UserService userService;
-    private CourseService courseService;
+    private CourseRepo courseRepo;
     private CourseOrderService courseOrderService;
 
-    public ReviewService(ReviewRepo reviewRepo, UserService userService, CourseService courseService, CourseOrderService courseOrderService) {
+    public ReviewService(ReviewRepo reviewRepo, UserService userService, CourseRepo courseRepo, CourseOrderService courseOrderService) {
         this.reviewRepo = reviewRepo;
         this.userService = userService;
-        this.courseService = courseService;
+        this.courseRepo = courseRepo;
         this.courseOrderService = courseOrderService;
     }
 
@@ -33,12 +33,23 @@ public class ReviewService {
         return reviewRepo.findById(reviewId).orElse(null);
     }
 
+    public Review getReviewByStudentAndCourseId(Long studentId, Long courseId) {
+        return reviewRepo.findByStudentIdAndCourseId(studentId, courseId);
+    }
+
     public Review addCourseReview(AddReviewReqDto addReviewReqDto) {
         boolean purchased = courseOrderService.checkIfStudentPurchasedCourse(addReviewReqDto.getStudentId(), addReviewReqDto.getCourseId());
         if (!purchased) {
             throw new CustomException("Student can't write review", HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        Review review = reviewDtoToEntity(addReviewReqDto);
+        Review review = this.getReviewByStudentAndCourseId(addReviewReqDto.getStudentId(), addReviewReqDto.getCourseId());
+        if (review != null) {
+            review.setContent(addReviewReqDto.getContent());
+            review.setRating(addReviewReqDto.getRating());
+            review.setEditedDate(new Date());
+        } else {
+            review = reviewDtoToEntity(addReviewReqDto);
+        }
         return reviewRepo.save(review);
     }
 
@@ -82,7 +93,7 @@ public class ReviewService {
     private Review reviewDtoToEntity(AddReviewReqDto addReviewReqDto) {
         Review review = new Review();
         review.setStudent(userService.getUserById(addReviewReqDto.getStudentId()));
-        review.setCourse(courseService.getCourseById(addReviewReqDto.getCourseId()).get());
+        review.setCourse(courseRepo.findById(addReviewReqDto.getCourseId()).get());
         review.setContent(addReviewReqDto.getContent());
         review.setRating(addReviewReqDto.getRating());
         review.setAddedDate(new Date());

@@ -209,14 +209,19 @@ public class FileService {
         }
     }
 
-    public Resource loadFileAsResource(String fileName, Long courseId) {
+    public Resource loadFileAsResource(String fileName, String absPath, Long courseId) {
 //        boolean hasAccess = authorizeUserForFileAccess(courseId);
 //        if (!hasAccess) {
 //            throw new CustomException("You can't access file: " + fileName, HttpStatus.FORBIDDEN);
 //        }
 
         try {
-            Path filePath = this.fileStorageLocation.resolve(fileName);
+            Path filePath;
+            if (absPath == null) {
+                filePath = this.fileStorageLocation.resolve(fileName);
+            } else {
+                filePath = Paths.get(absPath).normalize().resolve(fileName);
+            }
             Resource resource = new UrlResource(filePath.toUri());
             if (resource.exists() || resource.isReadable()) {
                 return resource;
@@ -232,8 +237,7 @@ public class FileService {
         String filePath = "/home/abylay/IdeaProjects/edu-marketplace/src/main/resources/static/" + fileName;
         String mimeType = this.getFileMimeType(fileName);
         final InputStream is = new FileInputStream(new File(filePath));
-        Resource resource = new InputStreamResource(is);
-        return resource;
+        return new InputStreamResource(is);
     }
 
     public byte[] loadFileBytes(String fileName) {

@@ -1,23 +1,37 @@
 package com.seniorproject.educationplatform.controllers;
 
+import com.itextpdf.text.DocumentException;
+import com.seniorproject.educationplatform.components.CertificateGenerator;
 import com.seniorproject.educationplatform.dto.course.CourseOrderReqDto;
 import com.seniorproject.educationplatform.dto.course.MultiCourseOrderReqDto;
+import com.seniorproject.educationplatform.exceptions.CustomException;
 import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.services.CourseOrderService;
-import com.seniorproject.educationplatform.services.CourseService;
+import com.seniorproject.educationplatform.services.FileService;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 public class CourseRegistrationController {
     private CourseOrderService courseOrderService;
-    private CourseService courseService;
+    private FileService fileService;
+    private CertificateGenerator certificateGenerator;
 
-    public CourseRegistrationController(CourseOrderService courseOrderService) {
+    public CourseRegistrationController(CourseOrderService courseOrderService, FileService fileService, CertificateGenerator certificateGenerator) {
         this.courseOrderService = courseOrderService;
+        this.fileService = fileService;
+        this.certificateGenerator = certificateGenerator;
     }
 
     @GetMapping("/user/{userId}/courses")
@@ -62,10 +76,26 @@ public class CourseRegistrationController {
         return ResponseEntity.ok(count);
     }
 
-//    @GetMapping("/instructor/{instructorId}/courses/{courseId}/students_jpql")
-//    public ResponseEntity getInstructorStudentsJpql(@PathVariable Long instructorId, @PathVariable Long courseId) {
-//        List students = courseOrderService.getInstructorStudentsJpql(courseId);
-//        return ResponseEntity.ok(students);
-//    }
+    /* Certificate Generator route */
+    @GetMapping("/user/{id:[0-9]+}/courses/{courseId:[0-9]+}/certificate")
+    public ResponseEntity<Object> getCertificate(@PathVariable Long id, @PathVariable Long courseId) throws IOException {
+        Map<String,String> fileMap;
+        try {
+            fileMap = certificateGenerator.generate(id, courseId, null);
+        } catch (IOException | DocumentException e) {
+            e.printStackTrace();
+            throw new CustomException("Certificate generation failed", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        String basePath = fileMap.get("basePath");
+        String filename = fileMap.get("filename");
+        Resource resource = fileService.loadFileAsResource(filename, basePath, null);
+
+        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Content-Disposition", "attachment; filename=" + filename);
+        headers.setContentDispositionFormData("attachment", filename);
+        headers.setContentLength(Files.size(Paths.get(basePath + filename)));
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
 
 }

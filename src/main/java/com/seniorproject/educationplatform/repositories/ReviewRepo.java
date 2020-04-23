@@ -9,4 +9,6 @@ public interface ReviewRepo extends JpaRepository<Review, Long> {
     List<Review> findByCourseId(Long courseId);
 
     int countByCourseId(Long courseId);
+
+    Review findByStudentIdAndCourseId(Long studentId, Long courseId);
 }

@@ -27,12 +27,12 @@ public class CourseLecture implements Serializable {
     private Video video;
 
     @JsonIgnoreProperties("courseLecture")
-    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "courseLecture", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("id asc")
     private List<CourseFile> files = new ArrayList<>();
 
 //    @JsonIgnoreProperties("courseLecture")
-//    @OneToMany(mappedBy = "courseLecture", fetch = FetchType.EAGER)
+//    @OneToMany(mappedBy = "courseLecture")
 //    private List<Comment> comments = new ArrayList<>();
 
     @JsonIgnore

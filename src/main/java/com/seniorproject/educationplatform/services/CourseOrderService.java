@@ -3,13 +3,15 @@ package com.seniorproject.educationplatform.services;
 import com.seniorproject.educationplatform.dto.course.CourseOrderReqDto;
 import com.seniorproject.educationplatform.dto.course.InstructorCourseStudents;
 import com.seniorproject.educationplatform.dto.course.MultiCourseOrderReqDto;
-import com.seniorproject.educationplatform.models.Course;
-import com.seniorproject.educationplatform.models.CourseOrder;
-import com.seniorproject.educationplatform.models.CourseOrderKey;
-import com.seniorproject.educationplatform.models.User;
+import com.seniorproject.educationplatform.dto.course.resp.StudentCourseRespDto;
+import com.seniorproject.educationplatform.dto.review.ReviewRespDto;
+import com.seniorproject.educationplatform.dto.user.resp.InstructorRespDto;
+import com.seniorproject.educationplatform.models.*;
 import com.seniorproject.educationplatform.repositories.CourseOrderRepo;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
+import com.seniorproject.educationplatform.repositories.ReviewRepo;
 import com.seniorproject.educationplatform.repositories.UserRepo;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,14 +28,20 @@ public class CourseOrderService {
     private UserService userService;
     private UserRepo userRepo;
     private CartService cartService;
+    private LectureService lectureService;
+    private ReviewRepo reviewRepo;
+    private ModelMapper modelMapper;
 
     @Autowired
-    public CourseOrderService(CourseOrderRepo courseOrderRepo, CourseRepo courseRepo, UserService userService, UserRepo userRepo, CartService cartService) {
+    public CourseOrderService(CourseOrderRepo courseOrderRepo, CourseRepo courseRepo, UserService userService, UserRepo userRepo, CartService cartService, LectureService lectureService, ReviewRepo reviewRepo, ModelMapper modelMapper) {
         this.courseOrderRepo = courseOrderRepo;
         this.courseRepo = courseRepo;
         this.userService = userService;
         this.userRepo = userRepo;
         this.cartService = cartService;
+        this.lectureService = lectureService;
+        this.reviewRepo = reviewRepo;
+        this.modelMapper = modelMapper;
     }
 
     public List<Course> getRegisteredCourses(Long userId) {
@@ -47,7 +55,18 @@ public class CourseOrderService {
             return ResponseEntity.unprocessableEntity().body("Student haven't purchased this course");
         }
         Course course = courseRepo.findById(courseId).get();
-        return ResponseEntity.ok(course);
+        StudentCourseRespDto courseDto = modelMapper.map(course, StudentCourseRespDto.class);
+        InstructorRespDto instructorRespDto = modelMapper.map(course.getInstructor(), InstructorRespDto.class);
+        courseDto.setInstructorDto(instructorRespDto);
+        List completedLectures = lectureService.getUserCompletedLecturesByCourse(userId, courseId);
+        courseDto.setCompletedLectures(completedLectures);
+        Review review = reviewRepo.findByStudentIdAndCourseId(userId, courseId);
+        ReviewRespDto reviewDto = null;
+        if (review != null) {
+            reviewDto = modelMapper.map(review, ReviewRespDto.class);
+        }
+        courseDto.setReviewDto(reviewDto);
+        return ResponseEntity.ok(courseDto);
     }
 
     public ResponseEntity<Object> purchaseCourse(CourseOrderReqDto courseOrderReqDto) {
