@@ -5,6 +5,7 @@ import com.seniorproject.educationplatform.models.VerificationToken;
 import com.seniorproject.educationplatform.repositories.UserRepo;
 import com.seniorproject.educationplatform.repositories.VerificationTokenRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,8 @@ public class VerificationTokenService {
     private UserRepo userRepository;
     private VerificationTokenRepo verificationTokenRepo;
     private EmailSenderService emailSenderService;
+    @Value("${server-host}")
+    private String serverHost;
 
     @Autowired
     public VerificationTokenService(UserRepo userRepository, VerificationTokenRepo verificationTokenRepo, EmailSenderService emailSenderService) {
@@ -32,7 +35,7 @@ public class VerificationTokenService {
         String from = "EduMarketplace Team <abylay.tastanbekov@nu.edu.kz>";
         String subject = "Confirm account!";
         String text = "Hi " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
-                "To confirm your account, please click here: https://edu-mp.herokuapp.com/confirm?token=" + verificationToken.getToken() + "\n\n" +
+                "To confirm your account, please click here: " + serverHost + "/confirm?token=" + verificationToken.getToken() + "\n\n" +
                 "Kind regards,\n" + "Education platform team,\n" + "Astana, Kazakhstan";
         emailSenderService.sendEmail(to, from, subject, text);
     }

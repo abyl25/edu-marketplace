@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -46,10 +47,10 @@ public class FileService {
     private VideoProcessingProducer producer;
     private VideoService videoService;
     private VideoRepo videoRepo;
-    private Path fileStorageLocation;
     private ModelMapper modelMapper;
+    private Path fileStorageLocation;
 
-    public FileService(AuthService authService, CourseRepo courseRepo, CourseLectureRepo courseLectureRepo, CourseFileRepo courseFileRepo, CourseOrderRepo courseOrderRepo, VideoProcessingProducer producer, VideoService videoService, VideoRepo videoRepo, ModelMapper modelMapper) {
+    public FileService(AuthService authService, CourseRepo courseRepo, CourseLectureRepo courseLectureRepo, CourseFileRepo courseFileRepo, CourseOrderRepo courseOrderRepo, VideoProcessingProducer producer, VideoService videoService, VideoRepo videoRepo, ModelMapper modelMapper,  @Value("${storage-dir}") String dir) {
         this.authService = authService;
         this.courseRepo = courseRepo;
         this.courseLectureRepo = courseLectureRepo;
@@ -59,7 +60,7 @@ public class FileService {
         this.videoService = videoService;
         this.videoRepo = videoRepo;
         this.modelMapper = modelMapper;
-        this.fileStorageLocation = Paths.get("/var/www/edu-marketplace").toAbsolutePath().normalize(); // src/main/resources/static
+        this.fileStorageLocation = Paths.get(dir).toAbsolutePath().normalize();
         this.createDirectory(fileStorageLocation);
     }
 
@@ -68,10 +69,10 @@ public class FileService {
         logger.info("storeFile(), thread name: " + Thread.currentThread().getName());
 //        String userName = authService.getLoggedInUser().getUsername();
         Course course = courseRepo.findById(courseId).orElseThrow(() -> new CustomException("Course not found", HttpStatus.NOT_FOUND));
-        String courseTitle = course.getTitle();
+        String permaLink = course.getPermaLink();
 
 //        Path path = this.fileStorageLocation.resolve(userName).resolve(courseTitle).resolve(type);
-        Path path = this.fileStorageLocation.resolve(courseTitle).resolve(type);
+        Path path = this.fileStorageLocation.resolve(permaLink + "-" + course.getId()).resolve(type);
         this.createDirectory(path);
 
         String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -256,6 +257,7 @@ public class FileService {
         try {
             Files.createDirectories(path);
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new CustomException("Could not create directory: " + path.toString(), HttpStatus.BAD_REQUEST);
         }
     }

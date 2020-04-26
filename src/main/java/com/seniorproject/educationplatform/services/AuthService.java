@@ -14,6 +14,7 @@ import com.seniorproject.educationplatform.security.JwtTokenProvider;
 import com.seniorproject.educationplatform.security.JwtUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -45,6 +46,8 @@ public class AuthService {
     private final PasswordTokenRepo passwordTokenRepo;
     private final VerificationTokenService verificationTokenService;
     private final EmailSenderService emailSenderService;
+    @Value("${server-host}")
+    private String serverHost;
 
     @Autowired
     public AuthService(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider,
@@ -112,7 +115,7 @@ public class AuthService {
         String from = "EduMarketplace Team <abylay.tastanbekov@nu.edu.kz>";
         String subject = "Password Reset";
         String text = "Hi " + user.getFirstName() + " " + user.getLastName() + ",\n\n" +
-                "To reset your password click here: http://localhost:8081/api/auth/resetPassword?id=" + user.getId() + "&token=" + passwordResetToken.getToken() + "\n\n" +
+                "To reset your password click here: " + serverHost + "/api/auth/resetPassword?id=" + user.getId() + "&token=" + passwordResetToken.getToken() + "\n\n" +
                 "Kind regards,\n" + "Education platform team,\n" + "Astana, Kazakhstan";
         emailSenderService.sendEmail(to, from, subject, text);
         return ResponseEntity.ok("We have sent you an email with password reset link");

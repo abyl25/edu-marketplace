@@ -2,6 +2,7 @@ package com.seniorproject.educationplatform.configs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -28,12 +29,14 @@ import java.util.List;
 @EnableWebMvc
 @EnableAsync
 public class WebConfig implements WebMvcConfigurer {
+    @Value("${storage-dir}")
+    private String dir;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
-            .addResourceHandler("/api/files/**")
-            .addResourceLocations("file:/home/abylay/IdeaProjects/education-platform/src/main/resources/files/");
+            .addResourceHandler("/static/**")
+            .addResourceLocations("file:" + dir + "/");
     }
 
     @Override

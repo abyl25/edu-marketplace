@@ -20,8 +20,6 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class VideoService {
     private static final Logger logger = LoggerFactory.getLogger(VideoService.class);
-//    private final String basePath = "/home/abylay/Desktop/video-thumbnail-sample";
-    private final String basePath = "/var/www/edu-marketplace";
     private FFmpeg ffmpeg;
     private FFprobe ffprobe;
 

@@ -54,15 +54,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/").permitAll()
             .antMatchers("/rest").permitAll()
 
-            .antMatchers("/api/**").permitAll()
+            .antMatchers("/**").permitAll()
 
             // static files
             .antMatchers("/api/files/**").permitAll()
             .antMatchers("/api/static/**").permitAll()
-//            .antMatchers("/api/static/files").permitAll()
-//            .antMatchers("/api/static/download/**").permitAll()
-//            .antMatchers("/api/static/images/**").permitAll()
-
 
             // Auth, User and Role routes
             .antMatchers(HttpMethod.GET, "/api/users/**").permitAll()

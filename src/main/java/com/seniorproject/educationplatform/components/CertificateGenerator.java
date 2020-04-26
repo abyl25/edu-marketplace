@@ -11,6 +11,7 @@ import com.seniorproject.educationplatform.models.Course;
 import com.seniorproject.educationplatform.models.User;
 import com.seniorproject.educationplatform.repositories.CourseRepo;
 import com.seniorproject.educationplatform.repositories.UserRepo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.FileOutputStream;
@@ -25,6 +26,8 @@ import java.util.Map;
 public class CertificateGenerator {
     private CourseRepo courseRepo;
     private UserRepo userRepo;
+    @Value("${cert-basepath}")
+    private String basePath;
 
     public CertificateGenerator(CourseRepo courseRepo, UserRepo userRepo) {
         this.courseRepo = courseRepo;
@@ -37,7 +40,7 @@ public class CertificateGenerator {
         Course course = courseRepo.findById(courseId).get();
         String courseName = course.getTitle();
 
-        String basePath = "/home/abylay/IdeaProjects/education-platform/src/main/resources/files/certificates/";
+//        String basePath = "/home/abylay/IdeaProjects/education-platform/src/main/resources/files/certificates/";
         String input = basePath + "orig-cert.pdf";
         String filename = student.getId() + "-" + student.getFirstName() + "-" + student.getLastName() + "-" + "course-" + course.getId() + ".pdf";
         String output = basePath + filename;
