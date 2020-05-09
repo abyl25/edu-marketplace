@@ -4,6 +4,8 @@ FROM openjdk:8-jdk-alpine as build
 # Set the current working directory inside the image
 WORKDIR /app
 
+RUN apk update && apk add ffmpeg
+
 # Copy maven executable to the image
 COPY mvnw .
 COPY .mvn .mvn

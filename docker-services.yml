@@ -1,6 +1,19 @@
 version: '3'
 
 services:
+  mysql:
+    image: mysql:8
+    environment:
+      - MYSQL_ROOT_PASSWORD=1234
+      - MYSQL_PASSWORD=1234
+      - MYSQL_DATABASE=my_db
+      - MYSQL_USER=abylay
+    ports:
+      - 3307:3306
+    volumes:
+      - "/docker-volumes/mysql-data:/var/lib/mysql"
+    restart: always
+
 #  nginx:
 ##    image: nginx:alpine
 #    build: ./nginx

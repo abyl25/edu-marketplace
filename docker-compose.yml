@@ -2,14 +2,23 @@ version: '3'
 
 services:
   spring-boot-app:
-    container_name: spring-boot-app
     build: .
     ports:
       - 8081:8080
+    depends_on:
+      - postgres
     restart: always
-    networks:
-      - my-network
-#    volumes:
-#      - ./:/data/spring-boot-app
-#      - ~/.m2:/root/.m2
+  #    volumes:
+  #    - "/docker-volumes/spring-data:/app"
 
+  postgres:
+    image: postgres:12.2-alpine
+    environment:
+      - POSTGRES_USER=abylay
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=my_db
+    ports:
+      - 5433:5432
+    volumes:
+      - "/docker-volumes/postgres-data:/var/lib/postgresql/data"
+    restart: always
